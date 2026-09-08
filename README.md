@@ -2,6 +2,8 @@
 
 **The page is the context.** Page-local debugging tools for browser agents, with a working Next.js demo.
 
+[Live demo](https://pagescope-omega.vercel.app) · [30-second walkthrough](docs/media/demo.mp4) · [Verification](docs/verification.md)
+
 Inspired by [Guillermo Rauch’s September 5, 2026 post](https://x.com/rauchg/status/2096065378598441431) proposing debugging tools exposed by the particular page an agent is testing.
 
 PageScope captures **opt-in state, request metadata, errors, and ordered events**, then exposes five read-only tools through the browser’s native WebMCP registry. No separate MCP server. No API key. No telemetry backend.
@@ -54,7 +56,7 @@ npm pack ./packages/pagescope
 
 ```tsx
 'use client';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PageScope } from '@dhairya-t/pagescope';
 import { PageScopeProvider, useInspectState, useWebMCP } from '@dhairya-t/pagescope/react';
 

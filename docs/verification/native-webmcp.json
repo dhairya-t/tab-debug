@@ -1,7 +1,7 @@
 {
-  "checkedAt": "2026-09-08T18:44:38.096Z",
+  "checkedAt": "2026-09-08T18:53:18.433Z",
   "transport": "agent-browser / native Chrome WebMCP",
-  "baseUrl": "http://localhost:3001",
+  "baseUrl": "https://pagescope-omega.vercel.app",
   "registeredTools": [
     {
       "name": "get_page_context",
@@ -116,7 +116,7 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "stateSources": [
           "Archive"
@@ -143,9 +143,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788893072719
+          "time": 1788893592531
         },
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "stateSources": [
           "Archive"
@@ -166,11 +166,11 @@
             "kind": "request",
             "label": "GET /api/archive",
             "seq": 5,
-            "time": 1788893072703
+            "time": 1788893592438
           },
           {
             "data": {
-              "durationMs": 15.4,
+              "durationMs": 92.9,
               "ok": false,
               "requestId": 5,
               "status": 503
@@ -178,10 +178,10 @@
             "kind": "response",
             "label": "503 /api/archive",
             "seq": 6,
-            "time": 1788893072719
+            "time": 1788893592531
           }
         ],
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "total": 2
       }
@@ -200,10 +200,10 @@
             "kind": "error",
             "label": "HTTP 503 from /api/archive",
             "seq": 7,
-            "time": 1788893072719
+            "time": 1788893592531
           }
         ],
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "total": 1
       }
@@ -212,7 +212,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "state": {
           "Archive": {
@@ -243,7 +243,7 @@
             "kind": "navigation",
             "label": "Page context created",
             "seq": 1,
-            "time": 1788893071872
+            "time": 1788893591695
           },
           {
             "data": {
@@ -265,7 +265,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 2,
-            "time": 1788893071872
+            "time": 1788893591696
           },
           {
             "data": {
@@ -274,7 +274,7 @@
             "kind": "action",
             "label": "Reproduce original bug",
             "seq": 3,
-            "time": 1788893072703
+            "time": 1788893592438
           },
           {
             "data": {
@@ -296,7 +296,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 4,
-            "time": 1788893072703
+            "time": 1788893592438
           },
           {
             "data": {
@@ -306,11 +306,11 @@
             "kind": "request",
             "label": "GET /api/archive",
             "seq": 5,
-            "time": 1788893072703
+            "time": 1788893592438
           },
           {
             "data": {
-              "durationMs": 15.4,
+              "durationMs": 92.9,
               "ok": false,
               "requestId": 5,
               "status": 503
@@ -318,7 +318,7 @@
             "kind": "response",
             "label": "503 /api/archive",
             "seq": 6,
-            "time": 1788893072719
+            "time": 1788893592531
           },
           {
             "data": {
@@ -328,7 +328,7 @@
             "kind": "error",
             "label": "HTTP 503 from /api/archive",
             "seq": 7,
-            "time": 1788893072719
+            "time": 1788893592531
           },
           {
             "data": {
@@ -346,7 +346,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 8,
-            "time": 1788893072721
+            "time": 1788893592532
           },
           {
             "data": {
@@ -364,7 +364,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 9,
-            "time": 1788893072721
+            "time": 1788893592533
           },
           {
             "data": {
@@ -374,10 +374,10 @@
             "kind": "action",
             "label": "Bug reproduced",
             "seq": 10,
-            "time": 1788893072721
+            "time": 1788893592533
           }
         ],
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "total": 10
       }
@@ -402,9 +402,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788893072719
+          "time": 1788893592531
         },
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "stateSources": [
           "Archive"
@@ -431,9 +431,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788893072719
+          "time": 1788893592531
         },
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "stateSources": [
           "Archive"
@@ -444,7 +444,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
+        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
         "route": "/",
         "state": {
           "Archive": {

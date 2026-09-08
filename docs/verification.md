@@ -39,3 +39,7 @@ These are deterministic integration checks and measured request timings, not an 
 ## Recorded outcome
 
 Verified September 8, 2026: 10 SDK tests passed; 7 production-browser tests passed with zero skips or flaky retries; 5 native tools and 5 invalid-input cases passed with two-tab isolation. Production dependency audit (`npm audit --omit=dev`) reported 0 vulnerabilities. Four moderate development-only advisories remain in the unused Drizzle toolchain inherited from the starter.
+
+The full seven-test browser suite and the native transport checks also passed against the public deployment at **https://pagescope-omega.vercel.app**. The committed native transcript records this public origin. The initial [GitHub CI run](https://github.com/dhairya-t/pagescope/actions/runs/34265245100) passed independently on Linux.
+
+The [walkthrough](media/demo.mp4) is an actual browser recording: 30.52 seconds, H.264, 1440×1040, 25fps. It shows the race fixture, inspection, and verified generation guard.
