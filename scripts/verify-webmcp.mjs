@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 const binary = new URL('../node_modules/.bin/agent-browser', import.meta.url)
   .pathname;
-const base = process.env.TEST_BASE_URL || 'http://localhost:3000';
+const base = new URL('/examples', process.env.TEST_BASE_URL || 'http://localhost:3000').href;
 const session = `pagescope-contract-${Date.now()}`;
 const transcript = [];
 function run(args, second = false, allowError = false) {
@@ -84,6 +84,18 @@ try {
   ).data.output;
   assert.notEqual(before.pageId, other.pageId);
   assert.equal(other.latestError, null);
+  run(['open', new URL('/', base).href]);
+  run(['wait', '--text', 'Capture & compare']);
+  run(['find', 'role', 'button', 'click', '--name', 'Capture & compare']);
+  run(['wait', '--text', 'Q2 is the first divergent commit.']);
+  const replayState = call('inspect_state').state;
+  assert.equal(replayState.Incident.format, 'pagescope.incident.v1');
+  assert.equal(replayState.Replay.actual, 'namibia');
+  assert.equal(replayState.Replay.expected, 'lena');
+  assert.equal(replayState.Comparison.patched.passed, true);
+  run(['click', '.schedule-intro button']);
+  run(['wait', '--text', '4/6 original failures']);
+  assert.equal(call('inspect_state').state.ScheduleCoverage.patchedFailures, 0);
   mkdirSync('docs/verification', { recursive: true });
   writeFileSync(
     'docs/verification/native-webmcp.json',
@@ -100,6 +112,8 @@ try {
         validCalls: transcript.length,
         invalidInputsRejected: tools.length,
         tabIsolation: true,
+        portableIncidentOverNativeTransport: true,
+        exhaustiveSchedules: 6,
         transcript,
       },
       null,

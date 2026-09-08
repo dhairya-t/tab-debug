@@ -25,7 +25,7 @@ async function inspect(page: Page, name: string) {
   return JSON.parse(await page.getByTestId('tool-result').innerText());
 }
 test.beforeEach(async ({ page }) => {
-  await page.goto('/');
+  await page.goto('/examples');
   await expect(page.locator('.context-id')).toHaveText(/[a-f0-9]{8}/);
   await expect(
     page.getByRole('button', { name: 'Reproduce bug' }),

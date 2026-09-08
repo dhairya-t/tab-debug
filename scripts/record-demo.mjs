@@ -11,7 +11,7 @@ const page = await context.newPage();
 // Pauses below pace the recording for a human viewer; verification uses condition-based waits.
 const beat = ms => page.waitForTimeout(ms);
 try {
- await page.goto(process.env.TEST_BASE_URL || 'http://localhost:3001');
+ await page.goto(new URL('/examples', process.env.TEST_BASE_URL || 'http://localhost:3001').href);
  await page.locator('.context-id').filter({ hasText: /[a-f0-9]{8}/ }).waitFor();
  await page.evaluate(() => document.fonts.ready);
  await page.getByRole('heading', { name: 'The page is the context.' }).click();
