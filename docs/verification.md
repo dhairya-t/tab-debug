@@ -2,6 +2,21 @@
 
 The test commands and evidence in this repository distinguish the underlying SDK, the visible application, and the actual native WebMCP transport.
 
+## Version 0.2: reproducible async races
+
+Verified September 8, 2026 against the official Next.js production build:
+
+- **25 unit tests** cover the diagnostic core, completion gate, cancellation, stalled-handler deadlines, immutable checkpoints, semantic state equality, strict incident validation, and both application adapters.
+- **13 browser tests** cover all original diagnostics plus capture, causal inspection, computed schedule results, changed-order passing cases, shipping quotes, invalid inputs, and mobile layout.
+- **Offline handoff:** an incident is exported, opened in a separate browser context with API requests blocked, and reproduces the original failure and patched result with zero API calls.
+- **Exported regression:** the `.spec.ts` file is downloaded through the real UI and run in fresh browser processes. The original exits 1 specifically because it returns `namibia` instead of `lena`; the identical test exits 0 on the patched app. See [the machine-readable evidence](verification/exported-regression.json).
+- **Native transport:** five tools are discovered and invoked, all five reject invalid arguments, two tabs are isolated, and `inspect_state` delivers the portable incident plus the six-schedule comparison. See [the native transcript](verification/native-webmcp.json).
+- **Dependencies:** removing unused starter modules and the unused database toolchain removed 86 installed packages. The full dependency audit reports **0 vulnerabilities**, including development dependencies.
+
+The current MP4 is an actual 26.20-second browser recording, H.264, 1440×1040 at 25fps. The old 0.1 verification below is retained as historical context.
+
+## Version 0.1 archive
+
 ## SDK invariants
 
 `npm run check` runs TypeScript checking, ten Node tests, and declaration/JavaScript emission for the standalone package.

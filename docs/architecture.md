@@ -1,5 +1,29 @@
 # Architecture
 
+## Deterministic replay
+
+```mermaid
+flowchart LR
+  API[Real fixture API] --> Projection[Explicit safe fields]
+  Projection --> Incident[Portable JSON incident]
+  Incident --> Gate[Completion gate]
+  Gate --> Handler[Actual application handler]
+  Handler --> Snapshot[State checkpoint and diff]
+  Snapshot --> Rule[Final state invariant]
+  Incident --> Generator[Playwright test generator]
+  Generator --> Fresh[Fresh browser / installed replay adapter]
+  Fresh --> Handler
+  Incident --> Native[Read-only WebMCP state]
+```
+
+The archive and shipping quote examples use independent async application handlers. Each dispatch starts synchronously and awaits a completion promise. The gate controls when that promise resolves, then waits for the handler before recording the checkpoint. Recorded outputs, rather than a live API, supply replay values. The scheduler is framework-independent and the rendering layer consumes its actual checkpoint states.
+
+The replay runner validates the incident before dispatch, deep-clones inputs and snapshots, bounds snapshot size, and supports cancellation/deadlines while awaiting handlers. Snapshot diffs identify the first differing business-state update. Schedule enumeration is exhaustive only over the recorded operations' completion orders, with all inputs issued first.
+
+The exported test embeds the recording, invokes an explicitly installed test adapter in a fresh browser, and independently asserts the selected state fields. The adapter rejects an incident for a different app ID. No source code in an incident is evaluated. See [the complete contract and limitations](replay.md).
+
+## Page-local diagnostics
+
 ```mermaid
 flowchart LR
   App[React application] -->|explicit state and actions| Scope[PageScope instance]

@@ -1,0 +1,80 @@
+{
+  "checkedAt": "2026-09-08T19:31:43.323Z",
+  "baseUrl": "http://localhost:3001",
+  "method": "Downloaded the generated test from the UI; ran the exact same file in two fresh browser processes.",
+  "original": {
+    "exitCode": 1,
+    "status": "failed",
+    "assertion": "Expected lena, received namibia"
+  },
+  "patched": {
+    "exitCode": 0,
+    "testsPassed": 1
+  },
+  "testFile": "test-results/exports/exported.spec.ts",
+  "incident": {
+    "appId": "atlas.search.v1",
+    "route": "/",
+    "operations": [
+      {
+        "id": "Q1",
+        "label": "namibia",
+        "input": {
+          "query": "namibia"
+        },
+        "output": {
+          "query": "namibia",
+          "ids": [
+            "namib",
+            "coast"
+          ]
+        },
+        "transportMs": 43.9
+      },
+      {
+        "id": "Q2",
+        "label": "atlantic",
+        "input": {
+          "query": "atlantic"
+        },
+        "output": {
+          "query": "atlantic",
+          "ids": [
+            "coast"
+          ]
+        },
+        "transportMs": 43.2
+      },
+      {
+        "id": "Q3",
+        "label": "lena",
+        "input": {
+          "query": "lena"
+        },
+        "output": {
+          "query": "lena",
+          "ids": [
+            "lena"
+          ]
+        },
+        "transportMs": 43.1
+      }
+    ],
+    "order": [
+      "Q3",
+      "Q2",
+      "Q1"
+    ],
+    "rule": {
+      "label": "Search results belong to the latest query after every request settles",
+      "actual": [
+        "appliedQuery"
+      ],
+      "expected": [
+        "query"
+      ]
+    },
+    "format": "pagescope.incident.v1",
+    "createdAt": "2026-09-08T19:31:40.796Z"
+  }
+}

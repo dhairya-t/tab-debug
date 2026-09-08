@@ -1,7 +1,7 @@
 {
-  "checkedAt": "2026-09-08T18:53:18.433Z",
+  "checkedAt": "2026-09-08T19:35:59.276Z",
   "transport": "agent-browser / native Chrome WebMCP",
-  "baseUrl": "https://pagescope-omega.vercel.app",
+  "baseUrl": "http://localhost:3001/examples",
   "registeredTools": [
     {
       "name": "get_page_context",
@@ -99,9 +99,11 @@
       }
     }
   ],
-  "validCalls": 9,
+  "validCalls": 11,
   "invalidInputsRejected": 5,
   "tabIsolation": true,
+  "portableIncidentOverNativeTransport": true,
+  "exhaustiveSchedules": 6,
   "transcript": [
     {
       "tool": "get_page_context",
@@ -116,8 +118,8 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "stateSources": [
           "Archive"
         ]
@@ -143,10 +145,10 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788893592531
+          "time": 1788896149607
         },
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "stateSources": [
           "Archive"
         ]
@@ -166,11 +168,11 @@
             "kind": "request",
             "label": "GET /api/archive",
             "seq": 5,
-            "time": 1788893592438
+            "time": 1788896149598
           },
           {
             "data": {
-              "durationMs": 92.9,
+              "durationMs": 8.5,
               "ok": false,
               "requestId": 5,
               "status": 503
@@ -178,11 +180,11 @@
             "kind": "response",
             "label": "503 /api/archive",
             "seq": 6,
-            "time": 1788893592531
+            "time": 1788896149607
           }
         ],
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "total": 2
       }
     },
@@ -200,11 +202,11 @@
             "kind": "error",
             "label": "HTTP 503 from /api/archive",
             "seq": 7,
-            "time": 1788893592531
+            "time": 1788896149607
           }
         ],
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "total": 1
       }
     },
@@ -212,8 +214,8 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "state": {
           "Archive": {
             "appliedQuery": "",
@@ -238,12 +240,12 @@
         "events": [
           {
             "data": {
-              "route": "/"
+              "route": "/examples"
             },
             "kind": "navigation",
             "label": "Page context created",
             "seq": 1,
-            "time": 1788893591695
+            "time": 1788896148768
           },
           {
             "data": {
@@ -265,7 +267,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 2,
-            "time": 1788893591696
+            "time": 1788896148768
           },
           {
             "data": {
@@ -274,7 +276,7 @@
             "kind": "action",
             "label": "Reproduce original bug",
             "seq": 3,
-            "time": 1788893592438
+            "time": 1788896149598
           },
           {
             "data": {
@@ -296,7 +298,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 4,
-            "time": 1788893592438
+            "time": 1788896149598
           },
           {
             "data": {
@@ -306,11 +308,11 @@
             "kind": "request",
             "label": "GET /api/archive",
             "seq": 5,
-            "time": 1788893592438
+            "time": 1788896149598
           },
           {
             "data": {
-              "durationMs": 92.9,
+              "durationMs": 8.5,
               "ok": false,
               "requestId": 5,
               "status": 503
@@ -318,7 +320,7 @@
             "kind": "response",
             "label": "503 /api/archive",
             "seq": 6,
-            "time": 1788893592531
+            "time": 1788896149607
           },
           {
             "data": {
@@ -328,7 +330,7 @@
             "kind": "error",
             "label": "HTTP 503 from /api/archive",
             "seq": 7,
-            "time": 1788893592531
+            "time": 1788896149607
           },
           {
             "data": {
@@ -346,7 +348,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 8,
-            "time": 1788893592532
+            "time": 1788896149610
           },
           {
             "data": {
@@ -364,7 +366,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 9,
-            "time": 1788893592533
+            "time": 1788896149610
           },
           {
             "data": {
@@ -374,11 +376,11 @@
             "kind": "action",
             "label": "Bug reproduced",
             "seq": 10,
-            "time": 1788893592533
+            "time": 1788896149610
           }
         ],
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "total": 10
       }
     },
@@ -402,10 +404,10 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788893592531
+          "time": 1788896149607
         },
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "stateSources": [
           "Archive"
         ]
@@ -431,10 +433,10 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788893592531
+          "time": 1788896149607
         },
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "stateSources": [
           "Archive"
         ]
@@ -444,8 +446,8 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "a554b1f2-d04f-4a28-88b1-b14f8ac58f72",
-        "route": "/",
+        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "route": "/examples",
         "state": {
           "Archive": {
             "appliedQuery": "",
@@ -462,6 +464,237 @@
               "Lena River Delta",
               "An edge of the Atlantic"
             ]
+          }
+        }
+      }
+    },
+    {
+      "tool": "inspect_state",
+      "input": {},
+      "result": {
+        "pageId": "222599c0-6e0c-4816-92ad-df6fd76103d7",
+        "route": "/",
+        "state": {
+          "Comparison": {
+            "expected": "lena",
+            "order": [
+              "Q3",
+              "Q2",
+              "Q1"
+            ],
+            "original": {
+              "actual": "namibia",
+              "passed": false
+            },
+            "patched": {
+              "actual": "lena",
+              "passed": true
+            }
+          },
+          "Incident": {
+            "appId": "atlas.search.v1",
+            "createdAt": "2026-09-08T19:35:55.374Z",
+            "format": "pagescope.incident.v1",
+            "operations": [
+              {
+                "id": "Q1",
+                "input": {
+                  "query": "namibia"
+                },
+                "label": "namibia",
+                "output": {
+                  "ids": [
+                    "namib",
+                    "coast"
+                  ],
+                  "query": "namibia"
+                },
+                "transportMs": 17.3
+              },
+              {
+                "id": "Q2",
+                "input": {
+                  "query": "atlantic"
+                },
+                "label": "atlantic",
+                "output": {
+                  "ids": [
+                    "coast"
+                  ],
+                  "query": "atlantic"
+                },
+                "transportMs": 16.6
+              },
+              {
+                "id": "Q3",
+                "input": {
+                  "query": "lena"
+                },
+                "label": "lena",
+                "output": {
+                  "ids": [
+                    "lena"
+                  ],
+                  "query": "lena"
+                },
+                "transportMs": 16.5
+              }
+            ],
+            "order": [
+              "Q3",
+              "Q2",
+              "Q1"
+            ],
+            "route": "/",
+            "rule": {
+              "actual": [
+                "appliedQuery"
+              ],
+              "expected": [
+                "query"
+              ],
+              "label": "Search results belong to the latest query after every request settles"
+            }
+          },
+          "Replay": {
+            "actual": "namibia",
+            "app": "atlas.search.v1",
+            "completionOrder": [
+              "Q3",
+              "Q2",
+              "Q1"
+            ],
+            "expected": "lena",
+            "finalState": {
+              "appliedQuery": "namibia",
+              "discarded": 0,
+              "ids": [
+                "namib",
+                "coast"
+              ],
+              "pending": 0,
+              "query": "lena"
+            },
+            "implementation": "original",
+            "passed": false
+          }
+        }
+      }
+    },
+    {
+      "tool": "inspect_state",
+      "input": {},
+      "result": {
+        "pageId": "222599c0-6e0c-4816-92ad-df6fd76103d7",
+        "route": "/",
+        "state": {
+          "Comparison": {
+            "expected": "lena",
+            "order": [
+              "Q3",
+              "Q2",
+              "Q1"
+            ],
+            "original": {
+              "actual": "namibia",
+              "passed": false
+            },
+            "patched": {
+              "actual": "lena",
+              "passed": true
+            }
+          },
+          "Incident": {
+            "appId": "atlas.search.v1",
+            "createdAt": "2026-09-08T19:35:55.374Z",
+            "format": "pagescope.incident.v1",
+            "operations": [
+              {
+                "id": "Q1",
+                "input": {
+                  "query": "namibia"
+                },
+                "label": "namibia",
+                "output": {
+                  "ids": [
+                    "namib",
+                    "coast"
+                  ],
+                  "query": "namibia"
+                },
+                "transportMs": 17.3
+              },
+              {
+                "id": "Q2",
+                "input": {
+                  "query": "atlantic"
+                },
+                "label": "atlantic",
+                "output": {
+                  "ids": [
+                    "coast"
+                  ],
+                  "query": "atlantic"
+                },
+                "transportMs": 16.6
+              },
+              {
+                "id": "Q3",
+                "input": {
+                  "query": "lena"
+                },
+                "label": "lena",
+                "output": {
+                  "ids": [
+                    "lena"
+                  ],
+                  "query": "lena"
+                },
+                "transportMs": 16.5
+              }
+            ],
+            "order": [
+              "Q3",
+              "Q2",
+              "Q1"
+            ],
+            "route": "/",
+            "rule": {
+              "actual": [
+                "appliedQuery"
+              ],
+              "expected": [
+                "query"
+              ],
+              "label": "Search results belong to the latest query after every request settles"
+            }
+          },
+          "Replay": {
+            "actual": "namibia",
+            "app": "atlas.search.v1",
+            "completionOrder": [
+              "Q3",
+              "Q2",
+              "Q1"
+            ],
+            "expected": "lena",
+            "finalState": {
+              "appliedQuery": "namibia",
+              "discarded": 0,
+              "ids": [
+                "namib",
+                "coast"
+              ],
+              "pending": 0,
+              "query": "lena"
+            },
+            "implementation": "original",
+            "passed": false
+          },
+          "ScheduleCoverage": {
+            "originalFailures": 4,
+            "patchedFailures": 0,
+            "schedules": 6
           }
         }
       }

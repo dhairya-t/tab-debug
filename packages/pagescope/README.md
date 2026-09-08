@@ -2,6 +2,10 @@
 
 Opt-in page-local debugging tools for browser agents, using native WebMCP.
 
+Version 0.2 adds deterministic async replay and portable regression tests. Import `createIncident`, `parseIncident`, `CompletionGate`, `replay`, `stateDiff`, `generatePlaywright`, and `installReplayTarget` from `@dhairya-t/pagescope/replay`. The `pagescope` CLI provides `inspect` and `test` commands for incident JSON files.
+
+Replay controls recorded completion promises at your real application's async handler boundary. The optional browser replay target is a mutating development/test interface and is separate from the read-only WebMCP tools. It is never installed automatically. See the [replay integration guide](https://github.com/dhairya-t/pagescope/blob/main/docs/replay.md).
+
 The core package has no runtime dependencies. The optional React adapter supports React 18+.
 
 ```ts

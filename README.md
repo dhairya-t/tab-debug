@@ -1,18 +1,33 @@
 # PageScope
 
-**The page is the context.** Page-local debugging tools for browser agents, with a working Next.js demo.
+**Catch the bug. Keep the proof.** Turn an intermittent browser race into a portable incident and a repeatable failing test.
 
-[Live demo](https://pagescope-omega.vercel.app) · [30-second walkthrough](docs/media/demo.mp4) · [Verification](docs/verification.md)
+[Live demo](https://pagescope-omega.vercel.app) · [Shipping example](https://pagescope-omega.vercel.app/shipping) · [Walkthrough](docs/media/demo.mp4) · [Integration guide](docs/replay.md)
 
-Inspired by [Guillermo Rauch’s September 5, 2026 post](https://x.com/rauchg/status/2096065378598441431) proposing debugging tools exposed by the particular page an agent is testing.
+Inspired by [Guillermo Rauch’s September 5, 2026 post](https://x.com/rauchg/status/2096065378598441431) about debugging tools exposed by the exact page a browser agent is testing.
 
-PageScope captures **opt-in state, request metadata, errors, and ordered events**, then exposes five read-only tools through the browser’s native WebMCP registry. No separate MCP server. No API key. No telemetry backend.
+![Original stale search results beside the verified generation guard](docs/media/replay.png)
 
-The demo is an editorial satellite archive with three real, controlled failure cases. Reproduce a bug, inspect the runtime evidence, switch to a documented patch, and rerun the experiment.
+## The problem
 
-![PageScope demo](docs/media/pagescope.png)
+A screenshot can show that search results are wrong. It cannot tell the next developer which response arrived late, what it overwrote, or how to make the same bug happen again.
 
-## Try it
+PageScope captures selected API response fields and the state invariant, controls completion order at the application's async boundary, and exports a Playwright test. The same recording fails before the fix and passes after it. Browser agents can retrieve the evidence through five native WebMCP tools.
+
+## Try the complete loop
+
+1. Select **Capture & compare**. Three actual API calls collect the fixture data.
+2. Q3 returns the correct Lena results. Q2 and Q1 subsequently overwrite them in the original implementation.
+3. Select **Jump to it** to inspect the first divergent state update.
+4. Select **Check all 6 orders**. The original fails four schedules; the guarded handler passes all six. These results are computed by running the application handlers.
+5. **Save incident** and reopen it in another browser. Replay works with the API blocked.
+6. **Export regression test**. Run the exact same file against the original and the patched application.
+
+Change the order so Q3 completes last: both versions pass. The outcome is not predetermined. The independent [checkout example](https://pagescope-omega.vercel.app/shipping) catches a quote for an old delivery address replacing the current one.
+
+The [Diagnostics examples](https://pagescope-omega.vercel.app/examples) retain the original HTTP 503/retry, out-of-order search, and React error-boundary demonstrations.
+
+## Run locally
 
 ```bash
 npm ci
@@ -20,95 +35,83 @@ npm run dev:next
 # http://localhost:3001
 ```
 
-Node 24 recommended (minimum 22.13). The public demo runs official Next.js on Vercel. `npm run dev` and `npm run build` retain a Vinext/Cloudflare path for the secondary Sites deployment. Both builds use the same React application and API fixtures.
+Node 24 recommended (minimum 22.13). The public deployment runs official Next.js on Vercel. A secondary Vinext/Cloudflare build is available through `npm run build`.
 
-1. Select **Out-of-order search** and **Reproduce bug**.
-2. The input says `lena`, while the results belong to `namibia`.
-3. Call `inspect_state`, then `inspect_timeline`. The older response overwrote the new intent.
-4. Select **Apply fix & verify**. The generation guard discards the stale result.
-5. Export the actual trace as JSON.
+## Reusable package
 
-“Apply fix” switches between prewritten implementations shown in the code panel. It does **not** claim to generate or edit code autonomously. Deliberate HTTP failures and latency are test fixtures, labeled as such in the source.
-
-## Use it with an agent
-
-Install [Vercel’s agent-browser](https://github.com/vercel-labs/agent-browser) and its Chrome for Testing runtime:
-
-```bash
-npx agent-browser install
-npx agent-browser --session pagescope open http://localhost:3001
-npx agent-browser --session pagescope webmcp list
-npx agent-browser --session pagescope webmcp invoke get_page_context --params '{}'
-npx agent-browser --session pagescope webmcp invoke inspect_requests --params '{"limit":10}'
-```
-
-Native WebMCP is experimental. PageScope feature-detects `document.modelContext.registerTool`. The demo’s inspector remains functional in unsupported browsers by calling the same validated executor locally; that fallback is labeled and is not a WebMCP polyfill. Native discovery and invocation have a separate verification script.
-
-## Quick start
-
-The reusable package is in [`packages/pagescope`](packages/pagescope). Build and package it locally (not published to npm yet):
+[`@dhairya-t/pagescope`](packages/pagescope) contains the framework-independent diagnostic core, optional React bindings, native WebMCP registration, completion gate, incident validator, replay runner, state diffing, and Playwright generator. The core has no runtime dependencies.
 
 ```bash
 npm run build:sdk
 npm pack ./packages/pagescope
-# In your app: npm install /path/to/dhairya-t-pagescope-0.1.0.tgz
+# Install the generated dhairya-t-pagescope-0.2.0.tgz in your app.
 ```
 
-```tsx
-'use client';
-import { useEffect, useState } from 'react';
-import { PageScope } from '@dhairya-t/pagescope';
-import { PageScopeProvider, useInspectState, useWebMCP } from '@dhairya-t/pagescope/react';
+Version 0.2 is packaged locally and is not published to the npm registry.
 
-export function DebugSurface({ children }: { children: React.ReactNode }) {
-  const [scope] = useState(() => new PageScope({ capacity: 120 }));
-  useEffect(() => { scope.enterPage(window.location.pathname); }, [scope]);
-  useWebMCP(scope); // registers read-only tools; aborts registrations on unmount
-  return <PageScopeProvider scope={scope}>{children}</PageScopeProvider>;
-}
+```ts
+import { createIncident, replay, installReplayTarget } from '@dhairya-t/pagescope/replay';
 ```
 
-Instrument selected calls with `scope.fetch(url, init)`. Use `scope.setState('Search', { query, count })` or `useInspectState` for explicit state sources. Use `PageScopeBoundary` around components to capture React errors. On an SPA route transition call `scope.enterPage(pathname)`; this clears previous state and prevents older in-flight requests from contaminating the new trace.
+Integrate at an existing async handler's data-source boundary. The replay adapter must call your real handler and return after its state update settles; PageScope controls the completion promise and snapshots your explicitly selected state. See the [complete integration example](docs/replay.md#add-it-to-your-app).
 
-Enable the provider only in development or in a deliberately public fixture like this demo. A production application should wrap it behind its own environment or authorization gate. The SDK does not infer your authorization policy.
-
-## What is exposed
-
-| Tool | Output |
-| --- | --- |
-| `get_page_context` | Page ID, route, counts, latest captured error |
-| `inspect_requests` | Correlated request/response events, status, measured duration |
-| `inspect_errors` | Captured errors with explicitly supplied source labels |
-| `inspect_state` | Explicitly registered state after bounded sanitization |
-| `inspect_timeline` | Ordered actions, requests, state changes, errors, discards |
-
-All tools validate input at execution time. `limit` is an integer from 1 to 50. Read-only annotations are accurate: tool calls do not add events or mutate app state. Application values are marked untrusted content.
-
-## Design and tradeoffs
-
-- **One context per tab/page view.** UUID identities, monotonic sequence numbers, generation isolation for late requests.
-- **Bounded retention.** Default 120 events, maximum 1,000; up to 24 state sources. Each record has an 8KB JSON budget with bounded depth, array length, and string length. Ring eviction is reported, not hidden.
-- **Opt-in instrumentation.** No patching of global fetch, console, React internals, cookies, or local storage. HTTP bodies, headers, and query strings are never recorded by the fetch wrapper.
-- **Sanitize before retention.** Common sensitive field names, bearer strings, and email-like values are redacted. This is a best-effort backstop, not a guarantee that arbitrary text is safe. Register only the fields you intend to expose.
-- **No background persistence.** Transient debugging evidence belongs to the current page; reload clears it. Export JSON if you want a durable artifact.
-- **No server debugger replacement.** Next.js already has [`next-devtools-mcp`](https://nextjs.org/docs/app/guides/mcp). PageScope adds a small opt-in browser surface and complements those server-side diagnostics.
-
-See [architecture](docs/architecture.md), [research](docs/research.md), [verification](docs/verification.md), and [image credits](public/images/CREDITS.md).
-
-## Verification
+The included CLI validates incidents and generates tests without the UI:
 
 ```bash
-npm run check                 # TypeScript, SDK tests, SDK compilation
+pagescope inspect incident.json
+pagescope test incident.json regression.spec.ts
+```
+
+## Native browser-agent context
+
+```bash
+npx agent-browser install
+npx agent-browser --session pagescope open https://pagescope-omega.vercel.app
+# Capture a run in the page, then:
+npx agent-browser --session pagescope webmcp list
+npx agent-browser --session pagescope webmcp invoke inspect_state --params '{}'
+```
+
+`inspect_state` includes the portable recording in `state.Incident`, the observed failure in `state.Replay`, and the verified comparison in `state.Comparison`. An agent can save the incident and use the CLI to produce the same regression test.
+
+| Tool | Evidence |
+| --- | --- |
+| `get_page_context` | Tab/page identity, route, diagnostic counts, latest error |
+| `inspect_requests` | Opt-in request metadata, correlation IDs, measured durations |
+| `inspect_errors` | Captured HTTP, React, and invariant failures |
+| `inspect_state` | Explicit state, portable incident, comparison and schedule results |
+| `inspect_timeline` | Ordered diagnostic events and replay checkpoints |
+
+The tools validate arguments and are read-only. Native WebMCP is experimental and feature-detected. Unsupported browsers retain the local inspector and all replay controls. The SDK does not install a fake native API.
+
+## Engineering boundaries
+
+- **Deterministic completion order.** A deferred-promise gate releases one response, awaits its actual application handler, then captures state. No timing guesses establish ordering.
+- **Portable, bounded evidence.** JSON-only incidents up to 200KB; 2–6 operations; 32KB checkpoints; explicit cancellation and a liveness deadline. No uploaded code or dynamic evaluation.
+- **Explicit data selection.** `scope.fetch` retains metadata only. The lab separately projects observation IDs or shipping quote fields into recordings. Headers, cookies and arbitrary bodies are not captured.
+- **Independent assertions.** The exported Playwright test reads returned application state and compares the recorded paths. It does not trust an adapter's `passed` flag.
+- **Two distinct interfaces.** The five WebMCP tools are read-only. The optional `installReplayTarget` bridge drives application handlers and must be explicitly enabled in development/test or a public fixture.
+- **Honest coverage.** Six schedules cover the completion permutations of three already-issued operations. This is not a proof about every event-loop interleaving, nor an LLM accuracy benchmark.
+
+The public patches are documented source branches. They do not generate repairs or edit a repository. Next.js already provides [server-side MCP diagnostics](https://nextjs.org/docs/app/guides/mcp); PageScope complements them with page-specific evidence and reproducible async behavior.
+
+## Verify
+
+```bash
+npm run check                # TypeScript, 25 tests, SDK compilation
 npm run build:vercel
-npm run start:next            # in another terminal
+npm run start:next           # another terminal
 TEST_BASE_URL=http://localhost:3001 npm run test:e2e
+TEST_BASE_URL=http://localhost:3001 npm run test:export
 TEST_BASE_URL=http://localhost:3001 npm run test:webmcp
 ```
 
-The browser suite should target a **production** server: development error overlays intentionally interrupt the render-crash fixture. The suite waits for hydration, not arbitrary sleeps. On Linux/CI run `npx playwright install --with-deps chromium`; on macOS it detects Chrome installed by agent-browser, or accepts `CHROME_PATH`.
+`test:export` downloads the test through the UI, runs it in fresh browser processes, verifies a genuine state-assertion failure on the original, and verifies success with the identical file on the patched application. CI includes this check.
+
+See [verification evidence](docs/verification.md), [architecture](docs/architecture.md), [research](docs/research.md), and [replay limits](docs/replay.md#what-this-covers).
 
 ## License and credits
 
 MIT. Built by [Dhairya Thakkar](https://github.com/dhairya-t).
 
-NASA/USGS imagery is used with attribution. The archive contains two Landsat false-color images and one MODIS natural-color image; these are not generated images. Typography and density take cues from [Vercel’s design work](https://vercel.com/design), [Linear](https://linear.app), and [Teenage Engineering’s field system](https://teenage.engineering/products/field-system), with an original editorial composition.
+Real NASA/USGS imagery, with [source credits](public/images/CREDITS.md). The typography and density take cues from [Vercel](https://vercel.com/design), [Linear](https://linear.app), and [Teenage Engineering](https://teenage.engineering/products/field-system), in an original editorial composition.
