@@ -1,11 +1,39 @@
 {
   "name": "@dhairya-t/pagescope",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Opt-in page-local diagnostic tools for browser agents over WebMCP",
   "type": "module",
   "license": "MIT",
-  "files": ["dist", "README.md", "LICENSE"],
-  "exports": { ".": { "types": "./dist/core.d.ts", "import": "./dist/core.js" }, "./react": { "types": "./dist/react.d.ts", "import": "./dist/react.js" }, "./webmcp": { "types": "./dist/webmcp.d.ts", "import": "./dist/webmcp.js" } },
-  "peerDependencies": { "react": ">=18" },
-  "scripts": { "build": "tsc -p tsconfig.json" }
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/core.d.ts",
+      "import": "./dist/core.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./webmcp": {
+      "types": "./dist/webmcp.d.ts",
+      "import": "./dist/webmcp.js"
+    },
+    "./replay": {
+      "types": "./dist/replay.d.ts",
+      "import": "./dist/replay.js"
+    }
+  },
+  "bin": {
+    "pagescope": "./dist/cli.js"
+  },
+  "peerDependencies": {
+    "react": ">=18"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json"
+  }
 }
