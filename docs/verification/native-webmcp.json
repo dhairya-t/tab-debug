@@ -1,0 +1,470 @@
+{
+  "checkedAt": "2026-09-08T18:35:52.713Z",
+  "transport": "agent-browser / native Chrome WebMCP",
+  "baseUrl": "http://localhost:3000",
+  "registeredTools": [
+    {
+      "name": "get_page_context",
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      },
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 20,
+            "maximum": 50,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_errors",
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      },
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 20,
+            "maximum": 50,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_requests",
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      },
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 20,
+            "maximum": 50,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_state",
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      },
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 20,
+            "maximum": 50,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    },
+    {
+      "name": "inspect_timeline",
+      "annotations": {
+        "readOnly": true,
+        "untrustedContent": true
+      },
+      "inputSchema": {
+        "additionalProperties": false,
+        "properties": {
+          "limit": {
+            "default": 20,
+            "maximum": 50,
+            "minimum": 1,
+            "type": "integer"
+          }
+        },
+        "type": "object"
+      }
+    }
+  ],
+  "validCalls": 9,
+  "invalidInputsRejected": 5,
+  "tabIsolation": true,
+  "transcript": [
+    {
+      "tool": "get_page_context",
+      "input": {},
+      "result": {
+        "dropped": 0,
+        "eventCount": 2,
+        "guarantees": [
+          "page-local",
+          "bounded records",
+          "opt-in state",
+          "no headers or bodies captured"
+        ],
+        "latestError": null,
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "stateSources": [
+          "Archive"
+        ]
+      }
+    },
+    {
+      "tool": "get_page_context",
+      "input": {},
+      "result": {
+        "dropped": 0,
+        "eventCount": 10,
+        "guarantees": [
+          "page-local",
+          "bounded records",
+          "opt-in state",
+          "no headers or bodies captured"
+        ],
+        "latestError": {
+          "data": {
+            "name": "Error",
+            "source": "fetch"
+          },
+          "kind": "error",
+          "label": "HTTP 503 from /api/archive",
+          "seq": 7,
+          "time": 1788892546836
+        },
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "stateSources": [
+          "Archive"
+        ]
+      }
+    },
+    {
+      "tool": "inspect_requests",
+      "input": {},
+      "result": {
+        "dropped": 0,
+        "events": [
+          {
+            "data": {
+              "method": "GET",
+              "path": "/api/archive"
+            },
+            "kind": "request",
+            "label": "GET /api/archive",
+            "seq": 5,
+            "time": 1788892546825
+          },
+          {
+            "data": {
+              "durationMs": 11.1,
+              "ok": false,
+              "requestId": 5,
+              "status": 503
+            },
+            "kind": "response",
+            "label": "503 /api/archive",
+            "seq": 6,
+            "time": 1788892546836
+          }
+        ],
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "total": 2
+      }
+    },
+    {
+      "tool": "inspect_errors",
+      "input": {},
+      "result": {
+        "dropped": 0,
+        "events": [
+          {
+            "data": {
+              "name": "Error",
+              "source": "fetch"
+            },
+            "kind": "error",
+            "label": "HTTP 503 from /api/archive",
+            "seq": 7,
+            "time": 1788892546836
+          }
+        ],
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "total": 1
+      }
+    },
+    {
+      "tool": "inspect_state",
+      "input": {},
+      "result": {
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "state": {
+          "Archive": {
+            "appliedQuery": "",
+            "busy": false,
+            "discarded": 0,
+            "failedAttempts": 1,
+            "fixed": false,
+            "phase": "broken",
+            "query": "",
+            "resultCount": 0,
+            "scenario": "network",
+            "titles": []
+          }
+        }
+      }
+    },
+    {
+      "tool": "inspect_timeline",
+      "input": {},
+      "result": {
+        "dropped": 0,
+        "events": [
+          {
+            "data": {
+              "route": "/"
+            },
+            "kind": "navigation",
+            "label": "Page context created",
+            "seq": 1,
+            "time": 1788892546054
+          },
+          {
+            "data": {
+              "appliedQuery": "",
+              "busy": false,
+              "discarded": 0,
+              "failedAttempts": 0,
+              "fixed": false,
+              "phase": "ready",
+              "query": "",
+              "resultCount": 3,
+              "scenario": "network",
+              "titles": [
+                "Namib sand sea",
+                "Lena River Delta",
+                "An edge of the Atlantic"
+              ]
+            },
+            "kind": "state",
+            "label": "Archive",
+            "seq": 2,
+            "time": 1788892546054
+          },
+          {
+            "data": {
+              "scenario": "network"
+            },
+            "kind": "action",
+            "label": "Reproduce original bug",
+            "seq": 3,
+            "time": 1788892546825
+          },
+          {
+            "data": {
+              "appliedQuery": "",
+              "busy": true,
+              "discarded": 0,
+              "failedAttempts": 0,
+              "fixed": false,
+              "phase": "ready",
+              "query": "",
+              "resultCount": 3,
+              "scenario": "network",
+              "titles": [
+                "Namib sand sea",
+                "Lena River Delta",
+                "An edge of the Atlantic"
+              ]
+            },
+            "kind": "state",
+            "label": "Archive",
+            "seq": 4,
+            "time": 1788892546825
+          },
+          {
+            "data": {
+              "method": "GET",
+              "path": "/api/archive"
+            },
+            "kind": "request",
+            "label": "GET /api/archive",
+            "seq": 5,
+            "time": 1788892546825
+          },
+          {
+            "data": {
+              "durationMs": 11.1,
+              "ok": false,
+              "requestId": 5,
+              "status": 503
+            },
+            "kind": "response",
+            "label": "503 /api/archive",
+            "seq": 6,
+            "time": 1788892546836
+          },
+          {
+            "data": {
+              "name": "Error",
+              "source": "fetch"
+            },
+            "kind": "error",
+            "label": "HTTP 503 from /api/archive",
+            "seq": 7,
+            "time": 1788892546836
+          },
+          {
+            "data": {
+              "appliedQuery": "",
+              "busy": true,
+              "discarded": 0,
+              "failedAttempts": 1,
+              "fixed": false,
+              "phase": "ready",
+              "query": "",
+              "resultCount": 0,
+              "scenario": "network",
+              "titles": []
+            },
+            "kind": "state",
+            "label": "Archive",
+            "seq": 8,
+            "time": 1788892546843
+          },
+          {
+            "data": {
+              "appliedQuery": "",
+              "busy": false,
+              "discarded": 0,
+              "failedAttempts": 1,
+              "fixed": false,
+              "phase": "broken",
+              "query": "",
+              "resultCount": 0,
+              "scenario": "network",
+              "titles": []
+            },
+            "kind": "state",
+            "label": "Archive",
+            "seq": 9,
+            "time": 1788892546843
+          },
+          {
+            "data": {
+              "resultCount": 0,
+              "scenario": "network"
+            },
+            "kind": "action",
+            "label": "Bug reproduced",
+            "seq": 10,
+            "time": 1788892546843
+          }
+        ],
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "total": 10
+      }
+    },
+    {
+      "tool": "get_page_context",
+      "input": {},
+      "result": {
+        "dropped": 0,
+        "eventCount": 10,
+        "guarantees": [
+          "page-local",
+          "bounded records",
+          "opt-in state",
+          "no headers or bodies captured"
+        ],
+        "latestError": {
+          "data": {
+            "name": "Error",
+            "source": "fetch"
+          },
+          "kind": "error",
+          "label": "HTTP 503 from /api/archive",
+          "seq": 7,
+          "time": 1788892546836
+        },
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "stateSources": [
+          "Archive"
+        ]
+      }
+    },
+    {
+      "tool": "get_page_context",
+      "input": {},
+      "result": {
+        "dropped": 0,
+        "eventCount": 10,
+        "guarantees": [
+          "page-local",
+          "bounded records",
+          "opt-in state",
+          "no headers or bodies captured"
+        ],
+        "latestError": {
+          "data": {
+            "name": "Error",
+            "source": "fetch"
+          },
+          "kind": "error",
+          "label": "HTTP 503 from /api/archive",
+          "seq": 7,
+          "time": 1788892546836
+        },
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "stateSources": [
+          "Archive"
+        ]
+      }
+    },
+    {
+      "tool": "inspect_state",
+      "input": {},
+      "result": {
+        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "route": "/",
+        "state": {
+          "Archive": {
+            "appliedQuery": "",
+            "busy": false,
+            "discarded": 0,
+            "failedAttempts": 1,
+            "fixed": true,
+            "phase": "verified",
+            "query": "",
+            "resultCount": 3,
+            "scenario": "network",
+            "titles": [
+              "Namib sand sea",
+              "Lena River Delta",
+              "An edge of the Atlantic"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

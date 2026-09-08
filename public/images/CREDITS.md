@@ -1,4 +1,4 @@
-# Faultline satellite demo assets
+# PageScope / Atlas image credits
 
 Downloaded September 8, 2026. These are real source images for dataset thumbnails and processing previews. No generated imagery. Optimized variants preserve source color and framing, with JPEG compression and downsizing only. Original downloads remain alongside them.
 

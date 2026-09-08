@@ -36,3 +36,9 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# verification and package output
+/test-results/
+/playwright-report/
+*.tsbuildinfo
+/packages/*/dist/

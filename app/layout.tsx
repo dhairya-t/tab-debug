@@ -14,7 +14,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'PageScope — The page is the context.',
-  description: 'Page-local debugging tools for browser agents. Reproduce a bug, inspect its live evidence through WebMCP, and verify the fix.',
+  description:
+    'Page-local debugging tools for browser agents. Reproduce a bug, inspect its live evidence through WebMCP, and verify the fix.',
 };
 
 export default function RootLayout({
