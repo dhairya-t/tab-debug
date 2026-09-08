@@ -82,7 +82,7 @@ export class DemoController {
   }
   reset(scenario: Scenario = this.#state.scenario) {
     this.#generation++;
-    this.scope.enterPage('/');
+    this.scope.enterPage('/examples');
     this.#update({
       scenario,
       fixed: false,

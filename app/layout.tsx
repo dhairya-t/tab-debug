@@ -14,17 +14,17 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://pagescope-omega.vercel.app'),
-  title: 'PageScope — The page is the context.',
+  title: 'PageScope — Catch the bug. Keep the proof.',
   description:
-    'Page-local debugging tools for browser agents. Reproduce a bug, inspect its live evidence through WebMCP, and verify the fix.',
+    'Turn an intermittent browser race into a repeatable failing test. Capture selected API responses, inspect state transitions, and export a Playwright regression.',
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     url: '/',
     siteName: 'PageScope',
-    title: 'PageScope — The page is the context.',
+    title: 'PageScope — Catch the bug. Keep the proof.',
     description:
-      'Five native WebMCP tools. Three real browser bugs. A Next.js debugging experiment by Dhairya Thakkar.',
+      'Capture a race. Replay every completion order. Export a test that fails before the fix and passes after it. Built by Dhairya Thakkar.',
     images: [
       {
         url: '/images/lena-delta.jpg',
@@ -34,9 +34,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PageScope — The page is the context.',
+    title: 'PageScope — Catch the bug. Keep the proof.',
     description:
-      'Five native WebMCP tools. Three real browser bugs. Built by Dhairya Thakkar.',
+      'An intermittent browser bug, turned into a portable incident and a failing regression test. Built by Dhairya Thakkar.',
     images: ['/images/lena-delta.jpg'],
   },
 };
