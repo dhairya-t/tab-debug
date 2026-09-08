@@ -1,0 +1,27 @@
+name: Verify PageScope
+on: [push, pull_request]
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm run build:vercel
+      - run: npx playwright install --with-deps chromium
+      - name: Start production demo
+        run: npm run start:next > /tmp/pagescope-server.log 2>&1 &
+      - name: Wait for production server
+        run: node -e 'const end=Date.now()+30000;const check=async()=>{try{const r=await fetch("http://localhost:3001");if(r.ok)return;}catch{}if(Date.now()>end)process.exit(1);setTimeout(check,250)};check()'
+      - run: npm run test:e2e
+        env:
+          TEST_BASE_URL: http://localhost:3001
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-verification
+          path: test-results/
