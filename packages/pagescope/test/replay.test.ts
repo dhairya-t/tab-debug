@@ -244,3 +244,37 @@ test('state diffs include removals and replacements; generated test compares raw
   );
   assert.doesNotMatch(script, /expect\(result.passed\)/);
 });
+test('an adapter that never settles is bounded by a liveness deadline', async () => {
+  await assert.rejects(
+    replay(
+      recording,
+      {
+        snapshot: () => ({}),
+        dispatch: async (_, value) => {
+          await value;
+          await new Promise(() => {});
+        },
+      },
+      { timeoutMs: 5 },
+    ),
+    /deadline exceeded/,
+  );
+});
+test('cancellation interrupts a pending application handler', async () => {
+  const controller = new AbortController();
+  await assert.rejects(
+    replay(
+      recording,
+      {
+        snapshot: () => ({}),
+        dispatch: async (_, value) => {
+          await value;
+          controller.abort();
+          await new Promise(() => {});
+        },
+      },
+      { signal: controller.signal },
+    ),
+    /cancelled/,
+  );
+});

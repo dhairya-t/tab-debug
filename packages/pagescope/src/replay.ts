@@ -314,9 +314,46 @@ export async function replay(
   options: {
     onCheckpoint?: (frame: Checkpoint) => void | Promise<void>;
     signal?: AbortSignal;
+    timeoutMs?: number;
   } = {},
 ): Promise<ReplayResult> {
   const incident = parseIncident(raw);
+  const timeout = options.timeoutMs ?? 10_000;
+  if (!Number.isInteger(timeout) || timeout < 1 || timeout > 30_000)
+    throw new Error('Replay deadline must be 1–30000ms');
+  const deadline = Date.now() + timeout;
+  const wait = (promise: Promise<unknown>) =>
+    new Promise<void>((resolve, reject) => {
+      if (options.signal?.aborted) {
+        void promise.catch(() => {});
+        reject(new Error('Replay cancelled'));
+        return;
+      }
+      const cancel = () => {
+        clearTimeout(timer);
+        reject(new Error('Replay cancelled'));
+      };
+      const timer = setTimeout(
+        () => {
+          options.signal?.removeEventListener('abort', cancel);
+          reject(new Error('Replay deadline exceeded'));
+        },
+        Math.max(0, deadline - Date.now()),
+      );
+      options.signal?.addEventListener('abort', cancel, { once: true });
+      promise.then(
+        () => {
+          clearTimeout(timer);
+          options.signal?.removeEventListener('abort', cancel);
+          resolve();
+        },
+        (error) => {
+          clearTimeout(timer);
+          options.signal?.removeEventListener('abort', cancel);
+          reject(error);
+        },
+      );
+    });
   const gate = new CompletionGate<Json>();
   const tasks = new Map<string, Promise<void>>();
   const frames: Checkpoint[] = [];
@@ -337,7 +374,7 @@ export async function replay(
       changes: frames.length ? stateDiff(frames.at(-1)!.state, state) : [],
     };
     frames.push(frame);
-    await options.onCheckpoint?.(clone(frame));
+    await wait(Promise.resolve(options.onCheckpoint?.(clone(frame))));
   };
   try {
     for (const op of incident.operations) {
@@ -353,8 +390,8 @@ export async function replay(
     await checkpoint('intent');
     for (const id of incident.order) {
       if (options.signal?.aborted) throw new Error('Replay cancelled');
-      await gate.release(id);
-      await tasks.get(id);
+      await wait(gate.release(id));
+      await wait(tasks.get(id)!);
       await checkpoint(id);
     }
     const finalState = clone(adapter.snapshot());
