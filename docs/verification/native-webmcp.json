@@ -1,7 +1,7 @@
 {
-  "checkedAt": "2026-09-08T18:35:52.713Z",
+  "checkedAt": "2026-09-08T18:44:38.096Z",
   "transport": "agent-browser / native Chrome WebMCP",
-  "baseUrl": "http://localhost:3000",
+  "baseUrl": "http://localhost:3001",
   "registeredTools": [
     {
       "name": "get_page_context",
@@ -116,7 +116,7 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "stateSources": [
           "Archive"
@@ -143,9 +143,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788892546836
+          "time": 1788893072719
         },
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "stateSources": [
           "Archive"
@@ -166,11 +166,11 @@
             "kind": "request",
             "label": "GET /api/archive",
             "seq": 5,
-            "time": 1788892546825
+            "time": 1788893072703
           },
           {
             "data": {
-              "durationMs": 11.1,
+              "durationMs": 15.4,
               "ok": false,
               "requestId": 5,
               "status": 503
@@ -178,10 +178,10 @@
             "kind": "response",
             "label": "503 /api/archive",
             "seq": 6,
-            "time": 1788892546836
+            "time": 1788893072719
           }
         ],
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "total": 2
       }
@@ -200,10 +200,10 @@
             "kind": "error",
             "label": "HTTP 503 from /api/archive",
             "seq": 7,
-            "time": 1788892546836
+            "time": 1788893072719
           }
         ],
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "total": 1
       }
@@ -212,7 +212,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "state": {
           "Archive": {
@@ -243,7 +243,7 @@
             "kind": "navigation",
             "label": "Page context created",
             "seq": 1,
-            "time": 1788892546054
+            "time": 1788893071872
           },
           {
             "data": {
@@ -265,7 +265,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 2,
-            "time": 1788892546054
+            "time": 1788893071872
           },
           {
             "data": {
@@ -274,7 +274,7 @@
             "kind": "action",
             "label": "Reproduce original bug",
             "seq": 3,
-            "time": 1788892546825
+            "time": 1788893072703
           },
           {
             "data": {
@@ -296,7 +296,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 4,
-            "time": 1788892546825
+            "time": 1788893072703
           },
           {
             "data": {
@@ -306,11 +306,11 @@
             "kind": "request",
             "label": "GET /api/archive",
             "seq": 5,
-            "time": 1788892546825
+            "time": 1788893072703
           },
           {
             "data": {
-              "durationMs": 11.1,
+              "durationMs": 15.4,
               "ok": false,
               "requestId": 5,
               "status": 503
@@ -318,7 +318,7 @@
             "kind": "response",
             "label": "503 /api/archive",
             "seq": 6,
-            "time": 1788892546836
+            "time": 1788893072719
           },
           {
             "data": {
@@ -328,7 +328,7 @@
             "kind": "error",
             "label": "HTTP 503 from /api/archive",
             "seq": 7,
-            "time": 1788892546836
+            "time": 1788893072719
           },
           {
             "data": {
@@ -346,7 +346,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 8,
-            "time": 1788892546843
+            "time": 1788893072721
           },
           {
             "data": {
@@ -364,7 +364,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 9,
-            "time": 1788892546843
+            "time": 1788893072721
           },
           {
             "data": {
@@ -374,10 +374,10 @@
             "kind": "action",
             "label": "Bug reproduced",
             "seq": 10,
-            "time": 1788892546843
+            "time": 1788893072721
           }
         ],
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "total": 10
       }
@@ -402,9 +402,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788892546836
+          "time": 1788893072719
         },
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "stateSources": [
           "Archive"
@@ -431,9 +431,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788892546836
+          "time": 1788893072719
         },
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "stateSources": [
           "Archive"
@@ -444,7 +444,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "664dc768-cde6-4c1b-98c7-1ccba4186e24",
+        "pageId": "7c2472fa-47cb-4b3f-8882-864a48c48f1a",
         "route": "/",
         "state": {
           "Archive": {

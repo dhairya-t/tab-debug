@@ -1,0 +1,7 @@
+.git
+.wrangler
+.vinext
+dist
+test-results
+playwright-report
+node_modules
