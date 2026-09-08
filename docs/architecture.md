@@ -52,7 +52,7 @@ State and events are sanitized before they enter the buffer. Snapshots are deep 
 | Case | Real failing behavior | Patch behavior | Evidence |
 | --- | --- | --- | --- |
 | Silent request failure | Fixture returns HTTP 503; original path treats it as an empty collection | One bounded retry receives HTTP 200, restoring items | Correlated request/response events, status codes, item counts |
-| Out-of-order search | Namibia request is deliberately delayed; its late response overwrites the newer Lena results | Per-search generation check discards the stale result | Query versus applied query; request timing; discard event |
+| Out-of-order search | Both real requests start together; a completion gate delivers Namibia after Lena, overwriting newer results | Per-search generation check discards the stale result | Query versus applied query; measured transport and explicit delivery events; discard event |
 | Nullable metadata | Fixture returns null title; original component throws during render | Nullish fallback before uppercase conversion | React boundary error; original nullable state; safe rendered output |
 
 The public API fixture accepts a small fixed set of cases and an optional bounded search string. It does not proxy user URLs, execute uploaded code, invoke models, or write persistent records.

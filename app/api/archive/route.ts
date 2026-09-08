@@ -1,5 +1,5 @@
 import { photos } from '@/lib/demo/data';
-/** Controlled test fixture. The explicit delay exists only to reproduce an out-of-order response. */
+/** Public bounded fixture data. The client completion gate controls the race's application delivery order. */
 export async function GET(request: Request) {
   const url = new URL(request.url);
   const scenario = url.searchParams.get('case');
@@ -16,8 +16,6 @@ export async function GET(request: Request) {
       { error: 'Archive temporarily unavailable', fixture: true },
       { status: 503, headers },
     );
-  if (scenario === 'race' && query === 'namibia')
-    await new Promise((resolve) => setTimeout(resolve, 650));
   const items = photos.filter(
     (p) => !query || `${p.title} ${p.region}`.toLowerCase().includes(query),
   );

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { photos } from '../lib/demo/data';
 async function choose(page: Page, label: string) {
   await page.getByRole('combobox', { name: 'Failure scenario' }).click();
   await page.getByRole('option', { name: label }).click();
@@ -90,6 +91,43 @@ test('real React exception is contained and nullable title patch renders safely'
   await expect(
     page.getByText('0' + '1 / UNTITLED OBSERVATION', { exact: false }),
   ).toBeVisible();
+});
+test('completion gate preserves the intended race even when transport arrives in the opposite order', async ({
+  page,
+}) => {
+  let firstArrived!: () => void;
+  const namibiaArrived = new Promise<void>((resolve) => {
+    firstArrived = resolve;
+  });
+  const arrivals: string[] = [];
+  page.on('response', (response) => {
+    const url = new URL(response.url());
+    if (url.searchParams.get('case') === 'race') {
+      arrivals.push(url.searchParams.get('q')!);
+      if (url.searchParams.get('q') === 'namibia') firstArrived();
+    }
+  });
+  await page.route('**/api/archive?case=race*', async (route) => {
+    const query = new URL(route.request().url()).searchParams.get('q')!;
+    if (query === 'lena') await namibiaArrived;
+    await route.fulfill({
+      status: 200,
+      json: {
+        query,
+        items: photos.filter((photo) =>
+          `${photo.title} ${photo.region}`.toLowerCase().includes(query),
+        ),
+      },
+    });
+  });
+  await choose(page, 'Out-of-order search');
+  await reproduce(page);
+  expect(arrivals).toEqual(['namibia', 'lena']);
+  const state = await inspect(page, 'inspect_state');
+  expect(state.state.Archive).toMatchObject({
+    query: 'lena',
+    appliedQuery: 'namibia',
+  });
 });
 test('view transitions reset page identity and clear previous diagnostics', async ({
   page,

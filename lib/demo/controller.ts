@@ -1,4 +1,5 @@
 import { PageScope } from '../../packages/pagescope/src/core.ts';
+import { CompletionGate } from '../../packages/pagescope/src/replay.ts';
 import { photos, type Photo, type Scenario } from './data.ts';
 export type ArchivePhoto = Omit<Photo, 'title'> & { title: string | null };
 export type DemoState = {
@@ -142,13 +143,16 @@ export class DemoController {
             });
         }
       } else if (scenario === 'race') {
-        // Fixture deliberately delays the first request. Production code should never add this delay.
+        // Actual HTTP arrival order varies in production. Gate delivery after capture to make the fixture repeatable.
+        const completions = new CompletionGate<Response>();
         let latestRequest = 0;
         const search = async (query: string) => {
           const request = ++latestRequest;
           this.#update({ query });
-          const response = await this.scope.fetch(
-            `${this.baseUrl}/api/archive?case=race&q=${query}`,
+          const response = await completions.hold(query, () =>
+            this.scope.fetch(
+              `${this.baseUrl}/api/archive?case=race&q=${query}`,
+            ),
           );
           if (!response.ok)
             throw new Error(`Search failed: ${response.status}`);
@@ -168,7 +172,24 @@ export class DemoController {
           }
           this.#update({ items: data.items, appliedQuery: data.query });
         };
-        await Promise.all([search('namibia'), search('lena')]);
+        const older = search('namibia');
+        const newer = search('lena');
+        void older.catch(() => {});
+        void newer.catch(() => {});
+        try {
+          this.scope.record('action', 'Deliver newest search response', {
+            query: 'lena',
+          });
+          await completions.release('lena');
+          await newer;
+          this.scope.record('action', 'Deliver older search response', {
+            query: 'namibia',
+          });
+          await completions.release('namibia');
+          await older;
+        } finally {
+          completions.cancel();
+        }
       } else {
         const response = await this.scope.fetch(
           `${this.baseUrl}/api/archive?case=render`,
