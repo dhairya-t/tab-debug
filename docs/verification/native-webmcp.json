@@ -1,7 +1,7 @@
 {
-  "checkedAt": "2026-09-08T19:35:59.276Z",
+  "checkedAt": "2026-09-08T19:49:29.340Z",
   "transport": "agent-browser / native Chrome WebMCP",
-  "baseUrl": "http://localhost:3001/examples",
+  "baseUrl": "https://pagescope-omega.vercel.app/examples",
   "registeredTools": [
     {
       "name": "get_page_context",
@@ -118,7 +118,7 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "stateSources": [
           "Archive"
@@ -145,9 +145,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788896149607
+          "time": 1788896959090
         },
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "stateSources": [
           "Archive"
@@ -168,11 +168,11 @@
             "kind": "request",
             "label": "GET /api/archive",
             "seq": 5,
-            "time": 1788896149598
+            "time": 1788896958900
           },
           {
             "data": {
-              "durationMs": 8.5,
+              "durationMs": 190.4,
               "ok": false,
               "requestId": 5,
               "status": 503
@@ -180,10 +180,10 @@
             "kind": "response",
             "label": "503 /api/archive",
             "seq": 6,
-            "time": 1788896149607
+            "time": 1788896959090
           }
         ],
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "total": 2
       }
@@ -202,10 +202,10 @@
             "kind": "error",
             "label": "HTTP 503 from /api/archive",
             "seq": 7,
-            "time": 1788896149607
+            "time": 1788896959090
           }
         ],
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "total": 1
       }
@@ -214,7 +214,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "state": {
           "Archive": {
@@ -245,7 +245,7 @@
             "kind": "navigation",
             "label": "Page context created",
             "seq": 1,
-            "time": 1788896148768
+            "time": 1788896958138
           },
           {
             "data": {
@@ -267,7 +267,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 2,
-            "time": 1788896148768
+            "time": 1788896958138
           },
           {
             "data": {
@@ -276,7 +276,7 @@
             "kind": "action",
             "label": "Reproduce original bug",
             "seq": 3,
-            "time": 1788896149598
+            "time": 1788896958900
           },
           {
             "data": {
@@ -298,7 +298,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 4,
-            "time": 1788896149598
+            "time": 1788896958900
           },
           {
             "data": {
@@ -308,11 +308,11 @@
             "kind": "request",
             "label": "GET /api/archive",
             "seq": 5,
-            "time": 1788896149598
+            "time": 1788896958900
           },
           {
             "data": {
-              "durationMs": 8.5,
+              "durationMs": 190.4,
               "ok": false,
               "requestId": 5,
               "status": 503
@@ -320,7 +320,7 @@
             "kind": "response",
             "label": "503 /api/archive",
             "seq": 6,
-            "time": 1788896149607
+            "time": 1788896959090
           },
           {
             "data": {
@@ -330,7 +330,7 @@
             "kind": "error",
             "label": "HTTP 503 from /api/archive",
             "seq": 7,
-            "time": 1788896149607
+            "time": 1788896959090
           },
           {
             "data": {
@@ -348,7 +348,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 8,
-            "time": 1788896149610
+            "time": 1788896959093
           },
           {
             "data": {
@@ -366,7 +366,7 @@
             "kind": "state",
             "label": "Archive",
             "seq": 9,
-            "time": 1788896149610
+            "time": 1788896959093
           },
           {
             "data": {
@@ -376,10 +376,10 @@
             "kind": "action",
             "label": "Bug reproduced",
             "seq": 10,
-            "time": 1788896149610
+            "time": 1788896959093
           }
         ],
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "total": 10
       }
@@ -404,9 +404,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788896149607
+          "time": 1788896959090
         },
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "stateSources": [
           "Archive"
@@ -433,9 +433,9 @@
           "kind": "error",
           "label": "HTTP 503 from /api/archive",
           "seq": 7,
-          "time": 1788896149607
+          "time": 1788896959090
         },
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "stateSources": [
           "Archive"
@@ -446,7 +446,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "11a289c8-148e-4876-a03a-460ceb4c13ec",
+        "pageId": "1983d87c-75a4-4f53-88ee-bced5ce915dc",
         "route": "/examples",
         "state": {
           "Archive": {
@@ -472,7 +472,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "222599c0-6e0c-4816-92ad-df6fd76103d7",
+        "pageId": "899773ac-d2f0-4a0e-aa0f-d1246fabefda",
         "route": "/",
         "state": {
           "Comparison": {
@@ -493,7 +493,7 @@
           },
           "Incident": {
             "appId": "atlas.search.v1",
-            "createdAt": "2026-09-08T19:35:55.374Z",
+            "createdAt": "2026-09-08T19:49:25.445Z",
             "format": "pagescope.incident.v1",
             "operations": [
               {
@@ -509,7 +509,7 @@
                   ],
                   "query": "namibia"
                 },
-                "transportMs": 17.3
+                "transportMs": 101.2
               },
               {
                 "id": "Q2",
@@ -523,7 +523,7 @@
                   ],
                   "query": "atlantic"
                 },
-                "transportMs": 16.6
+                "transportMs": 100.8
               },
               {
                 "id": "Q3",
@@ -537,7 +537,7 @@
                   ],
                   "query": "lena"
                 },
-                "transportMs": 16.5
+                "transportMs": 112.1
               }
             ],
             "order": [
@@ -585,7 +585,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "222599c0-6e0c-4816-92ad-df6fd76103d7",
+        "pageId": "899773ac-d2f0-4a0e-aa0f-d1246fabefda",
         "route": "/",
         "state": {
           "Comparison": {
@@ -606,7 +606,7 @@
           },
           "Incident": {
             "appId": "atlas.search.v1",
-            "createdAt": "2026-09-08T19:35:55.374Z",
+            "createdAt": "2026-09-08T19:49:25.445Z",
             "format": "pagescope.incident.v1",
             "operations": [
               {
@@ -622,7 +622,7 @@
                   ],
                   "query": "namibia"
                 },
-                "transportMs": 17.3
+                "transportMs": 101.2
               },
               {
                 "id": "Q2",
@@ -636,7 +636,7 @@
                   ],
                   "query": "atlantic"
                 },
-                "transportMs": 16.6
+                "transportMs": 100.8
               },
               {
                 "id": "Q3",
@@ -650,7 +650,7 @@
                   ],
                   "query": "lena"
                 },
-                "transportMs": 16.5
+                "transportMs": 112.1
               }
             ],
             "order": [

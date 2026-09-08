@@ -1,6 +1,6 @@
 {
-  "checkedAt": "2026-09-08T19:31:43.323Z",
-  "baseUrl": "http://localhost:3001",
+  "checkedAt": "2026-09-08T19:49:16.987Z",
+  "baseUrl": "https://pagescope-omega.vercel.app",
   "method": "Downloaded the generated test from the UI; ran the exact same file in two fresh browser processes.",
   "original": {
     "exitCode": 1,
@@ -29,7 +29,7 @@
             "coast"
           ]
         },
-        "transportMs": 43.9
+        "transportMs": 102.7
       },
       {
         "id": "Q2",
@@ -43,7 +43,7 @@
             "coast"
           ]
         },
-        "transportMs": 43.2
+        "transportMs": 93.9
       },
       {
         "id": "Q3",
@@ -57,7 +57,7 @@
             "lena"
           ]
         },
-        "transportMs": 43.1
+        "transportMs": 113.2
       }
     ],
     "order": [
@@ -75,6 +75,6 @@
       ]
     },
     "format": "pagescope.incident.v1",
-    "createdAt": "2026-09-08T19:31:40.796Z"
+    "createdAt": "2026-09-08T19:49:14.007Z"
   }
 }

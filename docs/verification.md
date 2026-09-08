@@ -15,6 +15,8 @@ Verified September 8, 2026 against the official Next.js production build:
 
 A public-deployment check exposed why timing-based fixtures are fragile: the original diagnostics example's 650ms server delay occasionally failed to enforce response order under variable network latency. It now uses the same completion gate as the replay SDK. Both HTTP requests remain real; application delivery order is explicit and separately recorded.
 
+The final public deployment at **https://pagescope-omega.vercel.app** passed all 14 browser checks, the exported-test failure/success check, and the native WebMCP contract. Both committed JSON transcripts now record that public origin. [GitHub CI](https://github.com/dhairya-t/pagescope/actions/runs/34270953003) independently passed the final code on Linux.
+
 The current MP4 is an actual 26.20-second browser recording, H.264, 1440×1040 at 25fps. The old 0.1 verification below is retained as historical context.
 
 ## Version 0.1 archive
