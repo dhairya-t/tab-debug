@@ -12,7 +12,7 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "db:generate": "drizzle-kit generate",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "next typegen && tsc --noEmit",
     "test:unit": "node --test packages/pagescope/test/*.test.ts",
     "test:e2e": "playwright test",
     "build:sdk": "tsc -p packages/pagescope/tsconfig.json",
