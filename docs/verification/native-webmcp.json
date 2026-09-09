@@ -1,7 +1,7 @@
 {
-  "checkedAt": "2026-09-09T04:05:18.665Z",
+  "checkedAt": "2026-09-09T04:49:11.366Z",
   "transport": "agent-browser / native Chrome WebMCP",
-  "baseUrl": "https://tab-debug-dhairya.vercel.app/examples",
+  "baseUrl": "http://localhost:3001/",
   "registeredTools": [
     {
       "name": "get_page_context",
@@ -118,10 +118,10 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
+        "pageId": "16b66522-519e-43d7-9281-5e6b11742fef",
+        "route": "/",
         "stateSources": [
-          "Archive"
+          "FileLoader"
         ]
       }
     },
@@ -130,27 +130,18 @@
       "input": {},
       "result": {
         "dropped": 0,
-        "eventCount": 10,
+        "eventCount": 12,
         "guarantees": [
           "page-local",
           "bounded records",
           "opt-in state",
           "no headers or bodies captured"
         ],
-        "latestError": {
-          "data": {
-            "name": "Error",
-            "source": "fetch"
-          },
-          "kind": "error",
-          "label": "HTTP 503 from /api/archive",
-          "seq": 7,
-          "time": 1788926708486
-        },
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
+        "latestError": null,
+        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "route": "/",
         "stateSources": [
-          "Archive"
+          "FileLoader"
         ]
       }
     },
@@ -163,29 +154,51 @@
           {
             "data": {
               "method": "GET",
-              "path": "/api/archive"
+              "path": "/api/transform-file/staging.json"
             },
             "kind": "request",
-            "label": "GET /api/archive",
-            "seq": 5,
-            "time": 1788926708295
+            "label": "GET /api/transform-file/staging.json",
+            "seq": 4,
+            "time": 1788929330973
           },
           {
             "data": {
-              "durationMs": 191.1,
-              "ok": false,
-              "requestId": 5,
-              "status": 503
+              "method": "GET",
+              "path": "/api/transform-file/production.json"
+            },
+            "kind": "request",
+            "label": "GET /api/transform-file/production.json",
+            "seq": 7,
+            "time": 1788929332325
+          },
+          {
+            "data": {
+              "durationMs": 220,
+              "ok": true,
+              "requestId": 7,
+              "status": 200
             },
             "kind": "response",
-            "label": "503 /api/archive",
-            "seq": 6,
-            "time": 1788926708486
+            "label": "200 /api/transform-file/production.json",
+            "seq": 9,
+            "time": 1788929332545
+          },
+          {
+            "data": {
+              "durationMs": 5018.7,
+              "ok": true,
+              "requestId": 4,
+              "status": 200
+            },
+            "kind": "response",
+            "label": "200 /api/transform-file/staging.json",
+            "seq": 11,
+            "time": 1788929335991
           }
         ],
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
-        "total": 2
+        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "route": "/",
+        "total": 4
       }
     },
     {
@@ -193,41 +206,26 @@
       "input": {},
       "result": {
         "dropped": 0,
-        "events": [
-          {
-            "data": {
-              "name": "Error",
-              "source": "fetch"
-            },
-            "kind": "error",
-            "label": "HTTP 503 from /api/archive",
-            "seq": 7,
-            "time": 1788926708486
-          }
-        ],
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
-        "total": 1
+        "events": [],
+        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "route": "/",
+        "total": 0
       }
     },
     {
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
+        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "route": "/",
         "state": {
-          "Archive": {
-            "appliedQuery": "",
-            "busy": false,
-            "discarded": 0,
-            "failedAttempts": 1,
-            "fixed": false,
-            "phase": "broken",
-            "query": "",
-            "resultCount": 0,
-            "scenario": "network",
-            "titles": []
+          "FileLoader": {
+            "discardedOlderResponse": false,
+            "displayedFile": "staging.json",
+            "implementation": "original",
+            "loading": false,
+            "selectedFile": "production.json",
+            "value": "{\n  \"file\": \"staging.json\",\n  \"app\": \"checkout\",\n  \"environment\": \"staging\",\n  \"debug\": true\n}"
           }
         }
       }
@@ -240,148 +238,149 @@
         "events": [
           {
             "data": {
-              "route": "/examples"
+              "route": "/"
             },
             "kind": "navigation",
             "label": "Page context created",
             "seq": 1,
-            "time": 1788926707549
+            "time": 1788929330621
           },
           {
             "data": {
-              "appliedQuery": "",
-              "busy": false,
-              "discarded": 0,
-              "failedAttempts": 0,
-              "fixed": false,
-              "phase": "ready",
-              "query": "",
-              "resultCount": 3,
-              "scenario": "network",
-              "titles": [
-                "Namib sand sea",
-                "Lena River Delta",
-                "An edge of the Atlantic"
-              ]
+              "discardedOlderResponse": false,
+              "displayedFile": null,
+              "implementation": "original",
+              "loading": true,
+              "selectedFile": null,
+              "value": ""
             },
             "kind": "state",
-            "label": "Archive",
+            "label": "FileLoader",
             "seq": 2,
-            "time": 1788926707550
+            "time": 1788929330627
           },
           {
             "data": {
-              "scenario": "network"
+              "file": "staging.json"
             },
             "kind": "action",
-            "label": "Reproduce original bug",
+            "label": "Fetch URL",
             "seq": 3,
-            "time": 1788926708294
-          },
-          {
-            "data": {
-              "appliedQuery": "",
-              "busy": true,
-              "discarded": 0,
-              "failedAttempts": 0,
-              "fixed": false,
-              "phase": "ready",
-              "query": "",
-              "resultCount": 3,
-              "scenario": "network",
-              "titles": [
-                "Namib sand sea",
-                "Lena River Delta",
-                "An edge of the Atlantic"
-              ]
-            },
-            "kind": "state",
-            "label": "Archive",
-            "seq": 4,
-            "time": 1788926708295
+            "time": 1788929330972
           },
           {
             "data": {
               "method": "GET",
-              "path": "/api/archive"
+              "path": "/api/transform-file/staging.json"
             },
             "kind": "request",
-            "label": "GET /api/archive",
+            "label": "GET /api/transform-file/staging.json",
+            "seq": 4,
+            "time": 1788929330973
+          },
+          {
+            "data": {
+              "discardedOlderResponse": false,
+              "displayedFile": null,
+              "implementation": "original",
+              "loading": true,
+              "selectedFile": "staging.json",
+              "value": ""
+            },
+            "kind": "state",
+            "label": "FileLoader",
             "seq": 5,
-            "time": 1788926708295
+            "time": 1788929330977
           },
           {
             "data": {
-              "durationMs": 191.1,
-              "ok": false,
-              "requestId": 5,
-              "status": 503
-            },
-            "kind": "response",
-            "label": "503 /api/archive",
-            "seq": 6,
-            "time": 1788926708486
-          },
-          {
-            "data": {
-              "name": "Error",
-              "source": "fetch"
-            },
-            "kind": "error",
-            "label": "HTTP 503 from /api/archive",
-            "seq": 7,
-            "time": 1788926708486
-          },
-          {
-            "data": {
-              "appliedQuery": "",
-              "busy": true,
-              "discarded": 0,
-              "failedAttempts": 1,
-              "fixed": false,
-              "phase": "ready",
-              "query": "",
-              "resultCount": 0,
-              "scenario": "network",
-              "titles": []
-            },
-            "kind": "state",
-            "label": "Archive",
-            "seq": 8,
-            "time": 1788926708489
-          },
-          {
-            "data": {
-              "appliedQuery": "",
-              "busy": false,
-              "discarded": 0,
-              "failedAttempts": 1,
-              "fixed": false,
-              "phase": "broken",
-              "query": "",
-              "resultCount": 0,
-              "scenario": "network",
-              "titles": []
-            },
-            "kind": "state",
-            "label": "Archive",
-            "seq": 9,
-            "time": 1788926708489
-          },
-          {
-            "data": {
-              "resultCount": 0,
-              "scenario": "network"
+              "file": "production.json"
             },
             "kind": "action",
-            "label": "Bug reproduced",
+            "label": "Fetch URL",
+            "seq": 6,
+            "time": 1788929332325
+          },
+          {
+            "data": {
+              "method": "GET",
+              "path": "/api/transform-file/production.json"
+            },
+            "kind": "request",
+            "label": "GET /api/transform-file/production.json",
+            "seq": 7,
+            "time": 1788929332325
+          },
+          {
+            "data": {
+              "discardedOlderResponse": false,
+              "displayedFile": null,
+              "implementation": "original",
+              "loading": true,
+              "selectedFile": "production.json",
+              "value": ""
+            },
+            "kind": "state",
+            "label": "FileLoader",
+            "seq": 8,
+            "time": 1788929332330
+          },
+          {
+            "data": {
+              "durationMs": 220,
+              "ok": true,
+              "requestId": 7,
+              "status": 200
+            },
+            "kind": "response",
+            "label": "200 /api/transform-file/production.json",
+            "seq": 9,
+            "time": 1788929332545
+          },
+          {
+            "data": {
+              "discardedOlderResponse": false,
+              "displayedFile": "production.json",
+              "implementation": "original",
+              "loading": true,
+              "selectedFile": "production.json",
+              "value": "{\n  \"file\": \"production.json\",\n  \"app\": \"checkout\",\n  \"environment\": \"production\",\n  \"debug\": false\n}"
+            },
+            "kind": "state",
+            "label": "FileLoader",
             "seq": 10,
-            "time": 1788926708489
+            "time": 1788929332553
+          },
+          {
+            "data": {
+              "durationMs": 5018.7,
+              "ok": true,
+              "requestId": 4,
+              "status": 200
+            },
+            "kind": "response",
+            "label": "200 /api/transform-file/staging.json",
+            "seq": 11,
+            "time": 1788929335991
+          },
+          {
+            "data": {
+              "discardedOlderResponse": false,
+              "displayedFile": "staging.json",
+              "implementation": "original",
+              "loading": false,
+              "selectedFile": "production.json",
+              "value": "{\n  \"file\": \"staging.json\",\n  \"app\": \"checkout\",\n  \"environment\": \"staging\",\n  \"debug\": true\n}"
+            },
+            "kind": "state",
+            "label": "FileLoader",
+            "seq": 12,
+            "time": 1788929336005
           }
         ],
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
-        "total": 10
+        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "route": "/",
+        "total": 12
       }
     },
     {
@@ -389,27 +388,18 @@
       "input": {},
       "result": {
         "dropped": 0,
-        "eventCount": 10,
+        "eventCount": 12,
         "guarantees": [
           "page-local",
           "bounded records",
           "opt-in state",
           "no headers or bodies captured"
         ],
-        "latestError": {
-          "data": {
-            "name": "Error",
-            "source": "fetch"
-          },
-          "kind": "error",
-          "label": "HTTP 503 from /api/archive",
-          "seq": 7,
-          "time": 1788926708486
-        },
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
+        "latestError": null,
+        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "route": "/",
         "stateSources": [
-          "Archive"
+          "FileLoader"
         ]
       }
     },
@@ -418,27 +408,18 @@
       "input": {},
       "result": {
         "dropped": 0,
-        "eventCount": 10,
+        "eventCount": 12,
         "guarantees": [
           "page-local",
           "bounded records",
           "opt-in state",
           "no headers or bodies captured"
         ],
-        "latestError": {
-          "data": {
-            "name": "Error",
-            "source": "fetch"
-          },
-          "kind": "error",
-          "label": "HTTP 503 from /api/archive",
-          "seq": 7,
-          "time": 1788926708486
-        },
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
+        "latestError": null,
+        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "route": "/",
         "stateSources": [
-          "Archive"
+          "FileLoader"
         ]
       }
     },
@@ -446,24 +427,16 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "ee39b9db-6563-4414-bf98-ce8f539db4b6",
-        "route": "/examples",
+        "pageId": "7a1e1a4f-de76-479d-842b-66685c3783a8",
+        "route": "/",
         "state": {
-          "Archive": {
-            "appliedQuery": "",
-            "busy": false,
-            "discarded": 0,
-            "failedAttempts": 1,
-            "fixed": true,
-            "phase": "verified",
-            "query": "",
-            "resultCount": 3,
-            "scenario": "network",
-            "titles": [
-              "Namib sand sea",
-              "Lena River Delta",
-              "An edge of the Atlantic"
-            ]
+          "FileLoader": {
+            "discardedOlderResponse": true,
+            "displayedFile": "production.json",
+            "implementation": "fixed",
+            "loading": false,
+            "selectedFile": "production.json",
+            "value": "{\n  \"file\": \"production.json\",\n  \"app\": \"checkout\",\n  \"environment\": \"production\",\n  \"debug\": false\n}"
           }
         }
       }
@@ -472,7 +445,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "c88da79d-8ad7-4a89-aaad-79f7f5630b6c",
+        "pageId": "0664464f-e3bd-4c57-8031-246811fe32ee",
         "route": "/replay",
         "state": {
           "Comparison": {
@@ -493,7 +466,7 @@
           },
           "Incident": {
             "appId": "atlas.search.v1",
-            "createdAt": "2026-09-09T04:05:14.846Z",
+            "createdAt": "2026-09-09T04:49:07.427Z",
             "format": "pagescope.incident.v1",
             "operations": [
               {
@@ -509,7 +482,7 @@
                   ],
                   "query": "namibia"
                 },
-                "transportMs": 136.9
+                "transportMs": 40.8
               },
               {
                 "id": "Q2",
@@ -523,7 +496,7 @@
                   ],
                   "query": "atlantic"
                 },
-                "transportMs": 137.6
+                "transportMs": 40.4
               },
               {
                 "id": "Q3",
@@ -537,7 +510,7 @@
                   ],
                   "query": "lena"
                 },
-                "transportMs": 172.4
+                "transportMs": 40.4
               }
             ],
             "order": [
@@ -585,7 +558,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "c88da79d-8ad7-4a89-aaad-79f7f5630b6c",
+        "pageId": "0664464f-e3bd-4c57-8031-246811fe32ee",
         "route": "/replay",
         "state": {
           "Comparison": {
@@ -606,7 +579,7 @@
           },
           "Incident": {
             "appId": "atlas.search.v1",
-            "createdAt": "2026-09-09T04:05:14.846Z",
+            "createdAt": "2026-09-09T04:49:07.427Z",
             "format": "pagescope.incident.v1",
             "operations": [
               {
@@ -622,7 +595,7 @@
                   ],
                   "query": "namibia"
                 },
-                "transportMs": 136.9
+                "transportMs": 40.8
               },
               {
                 "id": "Q2",
@@ -636,7 +609,7 @@
                   ],
                   "query": "atlantic"
                 },
-                "transportMs": 137.6
+                "transportMs": 40.4
               },
               {
                 "id": "Q3",
@@ -650,7 +623,7 @@
                   ],
                   "query": "lena"
                 },
-                "transportMs": 172.4
+                "transportMs": 40.4
               }
             ],
             "order": [
