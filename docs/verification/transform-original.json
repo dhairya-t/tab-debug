@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-09-09T03:47:00.861Z",
+  "repository": "https://github.com/ritz078/transform",
+  "revision": "ff7557939be351706f4dc6f71cc375e3bc64c225",
+  "mode": "original",
+  "method": "Real upstream app and file-loading UI. Only two JSON responses and their completion order are controlled by Playwright.",
+  "requestOrder": [
+    "first.json",
+    "second.json"
+  ],
+  "responseOrder": [
+    "second.json",
+    "first.json"
+  ],
+  "chosenFileVisible": "{\n  \"file\": \"second.json\",\n  \"color\": \"blue\"\n}",
+  "finalVisibleEditor": "{\n  \"file\": \"first.json\",\n  \"color\": \"red\"\n}",
+  "expectedFile": "second.json",
+  "actualFile": "first.json"
+}
