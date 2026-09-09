@@ -23,11 +23,29 @@ test('a corrected URL briefly renders the right JSON and YAML, then the older re
     'production.json is ready',
   );
   await expect(page.getByLabel('YAML output')).toContainText('"production"');
+  await expect(page.getByTestId('last-submitted')).toHaveText(
+    'production.json',
+  );
+  await expect(page.getByTestId('displayed-file')).toHaveText(
+    'production.json',
+  );
   await expect(page.getByRole('status')).toContainText(
     'The editor is showing staging.json',
   );
   await expect(page.getByLabel('JSON input')).toContainText('staging.json');
   await expect(page.getByLabel('YAML output')).toContainText('"staging"');
+  await expect(page.getByTestId('last-submitted')).toHaveText(
+    'production.json',
+  );
+  await expect(page.getByTestId('displayed-file')).toHaveText('staging.json');
+  const downloads = page.getByLabel('Downloads', { exact: true });
+  await expect(downloads).toContainText('Submission 1: staging.json');
+  await expect(downloads.locator('.tf-download').nth(0)).toContainText(
+    'Arrived second',
+  );
+  await expect(downloads.locator('.tf-download').nth(1)).toContainText(
+    'Arrived first',
+  );
   const original = await readEvidence(page);
   expect(original.inspect_state.state.FileLoader.selectedFile).toBe(
     'production.json',
@@ -87,6 +105,53 @@ test('the actual Load File controls reproduce the race without the walkthrough',
   expect(result.inspect_state.state.FileLoader.selectedFile).toBe(
     'production.json',
   );
+});
+
+test('editing the URL without submitting it starts no request and leaves the last submission unchanged', async ({
+  page,
+}) => {
+  let release!: () => void;
+  const gate = new Promise<void>((resolve) => {
+    release = resolve;
+  });
+  const requests: string[] = [];
+  page.on('request', (request) => {
+    if (request.url().includes('/api/transform-file/'))
+      requests.push(request.url());
+  });
+  await page.route('**/api/transform-file/staging.json', async (route) => {
+    await gate;
+    await route.fulfill({
+      json: { file: 'staging.json', environment: 'staging' },
+    });
+  });
+  try {
+    await page.goto('/');
+    await page.getByRole('button', { name: 'Load File', exact: true }).click();
+    await page.getByRole('button', { name: 'Fetch URL', exact: true }).click();
+    await expect(page.getByTestId('last-submitted')).toHaveText('staging.json');
+    await page
+      .getByLabel('File URL', { exact: true })
+      .fill('/api/transform-file/production.json');
+    await expect(page.locator('.tf-submission-note')).toHaveText(
+      'URL entered. Click Fetch URL to submit it.',
+    );
+    await expect(page.getByTestId('last-submitted')).toHaveText('staging.json');
+    release();
+    await expect(page.getByTestId('displayed-file')).toHaveText('staging.json');
+    const evidence = await readEvidence(page);
+    expect(requests).toHaveLength(1);
+    expect(evidence.inspect_state.state.FileLoader.selectedFile).toBe(
+      'staging.json',
+    );
+    expect(
+      evidence.inspect_requests.events.filter(
+        (event: { kind: string }) => event.kind === 'request',
+      ),
+    ).toHaveLength(1);
+  } finally {
+    release();
+  }
 });
 
 test('a fast first request leaves the correct result, so the bug outcome is not scripted', async ({

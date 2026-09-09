@@ -209,8 +209,8 @@
 }
 .tf-code {
   margin: 0;
-  padding: 22px 16px 24px 0;
-  height: 224px;
+  padding: 16px 16px 18px 0;
+  height: 200px;
   overflow: auto;
   color: #315371;
   font:
@@ -337,13 +337,13 @@
 }
 .tf-download {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 7px;
   color: #35698b;
   font-size: 12px;
 }
 .tf-download code {
-  font-size: 12px;
+  font-size: 14px;
 }
 .tf-download span {
   color: #6d7e89;
@@ -672,5 +672,96 @@
     align-items: flex-start;
     flex-direction: column;
     gap: 12px;
+  }
+}
+.tf-selection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+  padding: 13px 16px;
+  gap: 16px;
+  background: #f5f8fa;
+  border-bottom: 1px solid #dce3e8;
+}
+.tf-selection > div {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.tf-selection dt {
+  color: #60717f;
+  font-size: 14px;
+}
+.tf-selection dd {
+  margin: 0;
+  font:
+    500 15px var(--font-geist-mono),
+    monospace;
+  color: #235270;
+}
+.tf-selection dd.tf-selection-wrong {
+  color: #a04422;
+}
+.tf-pane-guide {
+  margin: 0;
+  padding: 8px 16px;
+  color: #677785;
+  font-size: 14px;
+  border-bottom: 1px solid #e0e6eb;
+}
+.tf-file-line {
+  background: #eaf4fc;
+}
+.tf-has-bug .tf-file-line {
+  background: #fff0e7;
+}
+.tf-submission-note {
+  font-size: 14px;
+  line-height: 1.4;
+  color: #375d79;
+  margin: 10px 0 0;
+}
+.tf-url-input button[data-submitted='true'] {
+  opacity: 1;
+  background: #084e84;
+  box-shadow: 0 0 0 3px #b3d9f4;
+}
+.tf-download-description {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.tf-download-description strong {
+  font-size: 14px;
+  font-weight: 400;
+}
+.tf-download-description > span {
+  font-size: 14px;
+}
+.tf-download > svg {
+  margin-top: 4px;
+}
+@media (max-width: 600px) {
+  .tf-selection {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .tf-selection > div {
+    justify-content: space-between;
+  }
+  .tf-selection dd {
+    font-size: 14px;
+  }
+  .tf-pane-guide {
+    font-size: 13px;
+  }
+  .tf-downloads {
+    gap: 12px;
+  }
+  .tf-download-description strong,
+  .tf-download-description > span,
+  .tf-download code {
+    font-size: 13px;
   }
 }

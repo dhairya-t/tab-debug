@@ -29,6 +29,7 @@ type Run = {
   guarded: boolean;
   latest: number;
   pending: number;
+  completed: number;
 };
 type Download = {
   id: number;
@@ -36,6 +37,7 @@ type Download = {
   status?: number;
   ignored?: boolean;
   failed?: boolean;
+  arrived?: number;
 };
 type EditorState = {
   selectedFile: FileName | null;
@@ -75,7 +77,10 @@ function CodeView({ text, label }: { text: string; label: string }) {
     <pre className="tf-code" aria-label={label}>
       {text ? (
         text.split('\n').map((line, i) => (
-          <span className="tf-code-line" key={i}>
+          <span
+            className={`tf-code-line ${/^\s*["']?file["']?:/.test(line) ? 'tf-file-line' : ''}`}
+            key={i}
+          >
             <span aria-hidden="true" className="tf-line-number">
               {i + 1}
             </span>
@@ -120,6 +125,7 @@ function FileLoader() {
   const [discarded, setDiscarded] = useState(false);
   const [popover, setPopover] = useState(false);
   const [url, setUrl] = useState(filePath('staging.json'));
+  const [submissionCue, setSubmissionCue] = useState<FileName | null>(null);
   const [reading, setReading] = useState(false);
   const [data, setData] = useState<Evidence | null>(null);
   const [readError, setReadError] = useState('');
@@ -186,6 +192,7 @@ function FileLoader() {
       guarded,
       latest: 0,
       pending: 0,
+      completed: 0,
     };
     run.current = next;
     setValue('');
@@ -198,6 +205,7 @@ function FileLoader() {
     setData(null);
     setReadError('');
     setUrl(filePath('staging.json'));
+    setSubmissionCue(null);
     debug?.enterPage('/');
     return next;
   }
@@ -207,6 +215,7 @@ function FileLoader() {
     const id = ++current.latest;
     current.pending++;
     setSelected(file);
+    setSubmissionCue(file);
     setPending(current.pending);
     setData(null);
     setDownloads((previous) => [...previous, { id, file }]);
@@ -222,9 +231,10 @@ function FileLoader() {
       JSON.parse(nextValue);
       if (run.current !== current || current.controller.signal.aborted) return;
       const ignored = current.guarded && id !== current.latest;
+      const arrived = ++current.completed;
       setDownloads((previous) =>
         previous.map((d) =>
-          d.id === id ? { ...d, status: res.status, ignored } : d,
+          d.id === id ? { ...d, status: res.status, ignored, arrived } : d,
         ),
       );
       if (ignored) {
@@ -233,12 +243,15 @@ function FileLoader() {
         return;
       }
       setValue(nextValue);
-      setPopover(false);
+      if (!walking.current) setPopover(false);
     } catch (cause) {
       if (run.current === current && !current.controller.signal.aborted) {
         setError(cause instanceof Error ? cause.message : String(cause));
+        const arrived = ++current.completed;
         setDownloads((previous) =>
-          previous.map((d) => (d.id === id ? { ...d, failed: true } : d)),
+          previous.map((d) =>
+            d.id === id ? { ...d, failed: true, arrived } : d,
+          ),
         );
         debug?.captureError(cause, 'FileLoader');
       }
@@ -261,8 +274,11 @@ function FileLoader() {
       await pause(850, current.controller.signal);
       if (current.controller.signal.aborted) return;
       setUrl(filePath('production.json'));
-      await pause(500, current.controller.signal);
+      setSubmissionCue(null);
+      await pause(700, current.controller.signal);
       const second = load('production.json', current);
+      await pause(700, current.controller.signal);
+      if (run.current === current) setPopover(false);
       await Promise.allSettled([first, second]);
     } finally {
       walking.current = false;
@@ -348,23 +364,30 @@ function FileLoader() {
   const observed = data?.state.state?.FileLoader;
   const responses =
     data?.requests.events?.filter((event) => event.kind === 'response') || [];
+  const stagingPending = downloads.some(
+    (d) => d.file === 'staging.json' && !d.status && !d.failed,
+  );
   const status =
     error ||
-    (busy
-      ? displayed === 'production.json'
-        ? 'production.json is ready. The first download is still running…'
+    (pending > 0
+      ? displayed === 'production.json' && stagingPending
+        ? 'production.json is ready. Both panes show production. The staging request is still running…'
         : selected === 'production.json'
-          ? 'You corrected the URL. Waiting for production.json…'
-          : selected
-            ? 'The staging URL is slow. You meant to load production.json.'
-            : 'Opening Load File…'
-      : wrong
-        ? 'You asked for production.json. The editor is showing staging.json.'
-        : finished && discarded
-          ? 'production.json stays in the editor. The older download was ignored.'
-          : displayed
-            ? `${displayed} is in the editor.`
-            : 'Watch the URL correction, or use Load File to try it yourself.');
+          ? stagingPending
+            ? 'Submitted production.json while staging.json is still downloading.'
+            : 'Submitted production.json. Waiting for its response.'
+          : 'Submitted staging.json. The staging URL is slow; it’s still downloading.'
+      : guided
+        ? selected
+          ? 'Submitted requests have finished.'
+          : 'Entering the first URL. No request has been submitted yet.'
+        : wrong
+          ? `You last submitted ${selected}. The editor is showing ${displayed}. The earlier request finished later and replaced both panes.`
+          : finished && discarded
+            ? 'production.json stays in both panes. The older download was ignored.'
+            : displayed
+              ? `${displayed} is in the editor.`
+              : 'Click Fetch URL once for each file. Editing the URL alone does not start a download.');
 
   return (
     <>
@@ -424,15 +447,31 @@ function FileLoader() {
             Original app <ArrowUpRight size={13} />
           </a>
         </div>
+        <dl
+          className="tf-selection"
+          aria-label="Submitted file and current result"
+        >
+          <div>
+            <dt>Last submitted</dt>
+            <dd data-testid="last-submitted">{selected || 'Nothing yet'}</dd>
+          </div>
+          <div>
+            <dt>Now in both panes</dt>
+            <dd
+              data-testid="displayed-file"
+              className={wrong ? 'tf-selection-wrong' : undefined}
+            >
+              {displayed || 'Waiting for a file'}
+            </dd>
+          </div>
+        </dl>
+        <p className="tf-pane-guide">
+          These panes show the same file in two formats.
+        </p>
         <div className="tf-editors">
           <section className="tf-editor">
             <div className="tf-editor-toolbar">
-              <span>
-                JSON{' '}
-                <small data-testid="displayed-file">
-                  {displayed || 'No file loaded'}
-                </small>
-              </span>
+              <span>Downloaded JSON</span>
               <button
                 ref={loadButton}
                 onClick={() => setPopover(!popover)}
@@ -469,14 +508,28 @@ function FileLoader() {
                       ref={inputRef}
                       id="tf-url"
                       value={url}
-                      onChange={(event) => setUrl(event.target.value)}
+                      onChange={(event) => {
+                        setUrl(event.target.value);
+                        setSubmissionCue(null);
+                      }}
                       disabled={guided || reading}
                     />
-                    <button type="submit" disabled={guided || reading}>
+                    <button
+                      type="submit"
+                      disabled={guided || reading}
+                      data-submitted={guided && !!submissionCue}
+                    >
                       Fetch URL
                     </button>
                   </div>
                 </form>
+                <p className="tf-submission-note" aria-live="polite">
+                  {submissionCue
+                    ? `Fetch URL → ${submissionCue} submitted.`
+                    : guided
+                      ? 'Entering the URL. It has not been submitted yet.'
+                      : 'URL entered. Click Fetch URL to submit it.'}
+                </p>
                 <div className="tf-sample-urls">
                   <span>Sample files</span>
                   {(['staging.json', 'production.json'] as const).map(
@@ -486,6 +539,7 @@ function FileLoader() {
                         disabled={guided || reading}
                         onClick={() => {
                           setUrl(filePath(name));
+                          setSubmissionCue(null);
                           inputRef.current?.focus();
                         }}
                       >
@@ -503,8 +557,8 @@ function FileLoader() {
           </section>
           <section className="tf-editor">
             <div className="tf-editor-toolbar">
-              <span>YAML</span>
-              <span className="tf-output-label">Converted from the editor</span>
+              <span>Converted YAML</span>
+              <span className="tf-output-label">Generated from the JSON</span>
             </div>
             <CodeView text={yaml} label="YAML output" />
           </section>
@@ -523,21 +577,25 @@ function FileLoader() {
                 ) : (
                   <Loader2 size={14} className="tf-spin" />
                 )}
-                <code>{download.file}</code>
-                <span>
-                  {download.failed
-                    ? 'Failed'
-                    : download.ignored
-                      ? '200 · ignored'
-                      : download.status
-                        ? `${download.status} · loaded`
-                        : 'Downloading…'}
-                </span>
+                <div className="tf-download-description">
+                  <strong>
+                    Submission {download.id}: <code>{download.file}</code>
+                  </strong>
+                  <span>
+                    {download.failed
+                      ? 'Failed'
+                      : download.ignored
+                        ? `Arrived ${download.arrived === 1 ? 'first' : 'second'} · ignored by the fix`
+                        : download.status
+                          ? `Arrived ${download.arrived === 1 ? 'first' : download.arrived === 2 ? 'second' : '#' + download.arrived}`
+                          : 'Submitted · still downloading'}
+                  </span>
+                </div>
               </div>
             ))
           ) : (
             <span className="tf-download-placeholder">
-              Downloads will appear here.
+              The two submissions and their arrival order will appear here.
             </span>
           )}
         </div>
@@ -555,7 +613,7 @@ function FileLoader() {
             <h3>What your agent can read</h3>
             <p>
               A 200 status doesn’t explain the wrong file. Your agent also needs
-              the last URL you chose and the editor’s current value.
+              the last URL you submitted and the editor’s current value.
             </p>
           </div>
           <button
@@ -606,7 +664,7 @@ function FileLoader() {
               </div>
               <dl className="td-state-list">
                 <div>
-                  <dt>Last URL chosen</dt>
+                  <dt>Last URL submitted</dt>
                   <dd data-testid="selected-file">
                     {observed?.selectedFile || '—'}
                   </dd>
@@ -636,7 +694,7 @@ function FileLoader() {
                 ? 'The older response finished last and replaced the file you wanted. Your agent can now investigate the loader with this evidence.'
                 : observed?.discardedOlderResponse
                   ? 'The same responses arrived, but the loader ignored the older one. The editor still matches your last choice.'
-                  : 'The editor matches the last URL chosen.'}
+                  : 'The editor matches the last URL submitted.'}
             </p>
             <details>
               <summary>Raw tool output</summary>
@@ -691,13 +749,14 @@ export default function TransformDemo() {
             </a>
           </div>
           <p>
-            For example: you’re{' '}
+            While{' '}
             <a href="https://transform.tools/json-to-yaml">
               converting JSON to YAML
-            </a>{' '}
-            and paste a staging URL by mistake. While it’s downloading, you
-            correct it to production. The right file loads, then the slower
-            staging download replaces it.
+            </a>
+            , you click <strong>Fetch URL</strong> for staging.json. Before it
+            finishes, you enter production.json and click{' '}
+            <strong>Fetch URL again</strong>. Production arrives first. Then the
+            earlier staging request finishes and overwrites the editor.
           </p>
         </section>
         <TabDebugProvider enabled route="/">

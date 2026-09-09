@@ -48,7 +48,7 @@ The five tools are `get_page_context`, `inspect_requests`, `inspect_errors`, `in
 
 ## A real UI bug
 
-We reproduced an existing bug in [Transform](https://github.com/ritz078/transform): use **Load File → Fetch URL**, correct a URL while its download is pending, and the slower first download can overwrite the newer selection. Both requests return 200, but the editor shows the wrong file. The public walkthrough illustrates this with staging and production JSON in a working JSON-to-YAML view. Those sample names describe a plausible user mistake, not a reported user incident. You can watch the sequence or operate the URL loader yourself, then read the actual WebMCP state and response history.
+We reproduced an existing bug in [Transform](https://github.com/ritz078/transform): use **Load File → Fetch URL**, click Fetch URL for one file, then submit a second URL while the first download is pending, and the slower first download can overwrite the newer selection. Both requests return 200, but the editor shows the wrong file. The public walkthrough illustrates this with staging and production JSON in a working JSON-to-YAML view. Those sample names describe a plausible user mistake, not a reported user incident. You can watch the sequence or operate the URL loader yourself, then read the actual WebMCP state and response history.
 
 The [live demo](https://tab-debug-dhairya.vercel.app) reduces this to one button, two requests, and the editor value. **Read state** and **Read requests** call the same tools exposed to browser agents. **Run with fix** checks a request number before applying a response.
 
