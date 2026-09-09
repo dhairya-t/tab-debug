@@ -1,0 +1,87 @@
+{
+  "checkedAt": "2026-09-09T03:49:10.982Z",
+  "repository": "https://github.com/ritz078/transform",
+  "revision": "ff7557939be351706f4dc6f71cc375e3bc64c225",
+  "mode": "fixed",
+  "method": "Real upstream app and file-loading UI. Only two JSON responses and their completion order are controlled by Playwright.",
+  "requestOrder": [
+    "first.json",
+    "second.json"
+  ],
+  "responseOrder": [
+    "second.json",
+    "first.json"
+  ],
+  "chosenFileVisible": "{\n  \"file\": \"second.json\",\n  \"color\": \"blue\"\n}",
+  "finalVisibleEditor": "{\n  \"file\": \"second.json\",\n  \"color\": \"blue\"\n}",
+  "expectedFile": "second.json",
+  "actualFile": "second.json",
+  "webmcp": {
+    "inspect_requests": {
+      "pageId": "760fe3ba-d681-4c7c-954c-38a3aab093b0",
+      "route": "/json-to-yaml",
+      "total": 4,
+      "dropped": 0,
+      "events": [
+        {
+          "seq": 4,
+          "time": 1788925750578,
+          "kind": "request",
+          "label": "GET /__tab-debug-fixtures/first.json",
+          "data": {
+            "method": "GET",
+            "path": "/__tab-debug-fixtures/first.json"
+          }
+        },
+        {
+          "seq": 6,
+          "time": 1788925750618,
+          "kind": "request",
+          "label": "GET /__tab-debug-fixtures/second.json",
+          "data": {
+            "method": "GET",
+            "path": "/__tab-debug-fixtures/second.json"
+          }
+        },
+        {
+          "seq": 7,
+          "time": 1788925750635,
+          "kind": "response",
+          "label": "200 /__tab-debug-fixtures/second.json",
+          "data": {
+            "requestId": 6,
+            "status": 200,
+            "ok": true,
+            "durationMs": 16.7
+          }
+        },
+        {
+          "seq": 11,
+          "time": 1788925750674,
+          "kind": "response",
+          "label": "200 /__tab-debug-fixtures/first.json",
+          "data": {
+            "requestId": 4,
+            "status": 200,
+            "ok": true,
+            "durationMs": 96.2
+          }
+        }
+      ]
+    },
+    "inspect_state": {
+      "pageId": "760fe3ba-d681-4c7c-954c-38a3aab093b0",
+      "route": "/json-to-yaml",
+      "state": {
+        "Editor1": {
+          "value": "{\n  \"file\": \"second.json\",\n  \"color\": \"blue\"\n}",
+          "fetchingUrl": ""
+        },
+        "Editor3": {
+          "value": "file: second.json\ncolor: blue\n",
+          "fetchingUrl": ""
+        }
+      }
+    }
+  }
+}

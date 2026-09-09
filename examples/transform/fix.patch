@@ -1,0 +1,17 @@
+--- a/components/EditorPanel.tsx
++++ b/components/EditorPanel.tsx
+@@ -65,2 +65,7 @@
+   const [fetchingUrl, setFetchingUrl] = useState("");
++  const latestUrlLoad = useRef(0);
++
++  useEffect(() => () => {
++    latestUrlLoad.current += 1;
++  }, []);
+ 
+@@ -143,4 +148,6 @@
+         if (!fetchingUrl) return;
++        const loadId = ++latestUrlLoad.current;
+         const res = await fetch(fetchingUrl);
+         const value = await res.text();
++        if (loadId !== latestUrlLoad.current) return;
+         setValue(value);

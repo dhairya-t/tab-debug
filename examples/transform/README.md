@@ -44,3 +44,21 @@ The connection observes this local app’s own fetches and selected editor value
 HTTP success does not guarantee that the screen shows the right response. A browser agent can inspect the requests **and** the current editor value in the tab it is testing. Tab-debug provides that evidence; it does not automatically diagnose or fix the source code.
 
 The public demo is a reduced reproduction of the same loader, with a simpler UI. The evidence above comes from the full upstream app. No upstream issue or pull request has been submitted.
+
+## Verify the fix
+
+Apply the small patch in the Transform checkout:
+
+```sh
+git apply /absolute/path/to/tab-debug/examples/transform/fix.patch
+```
+
+Then run from tab-debug:
+
+```sh
+node examples/transform/verify.mjs fixed
+```
+
+Each URL load gets an increasing number. After reading the response body, it updates the editor only if its number is still current. Unmounting invalidates pending loads. This fixes overlapping URL loads; it does not claim to fix every possible editor or conversion race.
+
+Verified results: original and instrumented versions display `first.json` (wrong); patched version retains `second.json` (correct). Native WebMCP agrees with the rendered editor in both instrumented runs. The regression checks the visible editor directly, independently of tab-debug.
