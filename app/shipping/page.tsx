@@ -1,4 +1,5 @@
-import RaceLab from '@/components/race-lab';
+import { redirect } from 'next/navigation';
+
 export default function ShippingPage() {
-  return <RaceLab app="shipping" />;
+  redirect('/');
 }

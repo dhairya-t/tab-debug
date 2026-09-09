@@ -123,31 +123,15 @@ test('a changed completion order can pass both versions, and results are not pre
     page.getByTestId('preview-patched').locator('.result-badge'),
   ).toHaveText('PASS');
 });
-test('the second shipping app exposes a real wrong-destination quote', async ({
-  page,
-}) => {
-  await ready(page, '/shipping');
-  await capture(page);
-  await expect(
-    page.getByTestId('preview-original').locator('.invariant-line'),
-  ).toContainText('Canada ≠ France');
-  await expect(
-    page.getByTestId('preview-patched').locator('.invariant-line'),
-  ).toContainText('France = France');
-  await expect(page.getByTestId('preview-original')).toContainText('$8.00');
-  await expect(page.getByTestId('preview-patched')).toContainText('$16.00');
-});
 test('malformed recordings and failed capture requests produce actionable errors', async ({
   page,
 }) => {
   await ready(page);
-  await page
-    .getByLabel('Open incident file', { exact: true })
-    .setInputFiles({
-      name: 'bad.json',
-      mimeType: 'application/json',
-      buffer: Buffer.from('{bad'),
-    });
+  await page.getByLabel('Open incident file', { exact: true }).setInputFiles({
+    name: 'bad.json',
+    mimeType: 'application/json',
+    buffer: Buffer.from('{bad'),
+  });
   await expect(
     page.getByTestId('replay-ready').getByRole('alert'),
   ).toContainText('malformed JSON');

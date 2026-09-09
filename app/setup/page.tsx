@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { ArrowUpRight } from 'lucide-react';
 import { SiteHeader } from '@/components/site-header';
 import { CopyCode } from '@/components/copy-code';
-import { SetupExample } from '@/components/setup-example';
 import '@/components/race-lab.css';
 import './setup.css';
 
@@ -46,7 +45,6 @@ export default function Setup() {
           <a href="#layout">Layout</a>
           <a href="#state">Application state</a>
           <a href="#agent">Browser agent</a>
-          <a href="#example">Working example</a>
           <a href="#replay">Optional replay</a>
         </aside>
         <article>
@@ -144,14 +142,6 @@ export default function Setup() {
                 </tr>
               </tbody>
             </table>
-          </section>
-          <section id="example">
-            <h2>Working example</h2>
-            <p>
-              This form imports the package from the same archive as the install
-              command. Fetch a quote, then inspect its state or requests.
-            </p>
-            <SetupExample />
           </section>
           <section id="replay">
             <h2>Optional: reproduce a race</h2>

@@ -3,7 +3,8 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import assert from 'node:assert/strict';
 const binary = new URL('../node_modules/.bin/agent-browser', import.meta.url)
   .pathname;
-const base = new URL('/examples', process.env.TEST_BASE_URL || 'http://localhost:3000').href;
+const base = new URL('/', process.env.TEST_BASE_URL || 'http://localhost:3001')
+  .href;
 const session = `pagescope-contract-${Date.now()}`;
 const transcript = [];
 function run(args, second = false, allowError = false) {
@@ -41,7 +42,7 @@ function call(name, input = {}) {
 }
 try {
   run(['open', base]);
-  run(['wait', '--text', 'WEBMCP LIVE']);
+  run(['wait', '--text', 'Watch the bug']);
   const tools = run(['webmcp', 'list']).data.tools;
   assert.equal(tools.length, 5);
   assert.ok(
@@ -50,15 +51,22 @@ try {
     ),
   );
   const before = call('get_page_context');
-  run(['find', 'role', 'button', 'click', '--name', 'Reproduce bug']);
-  run(['wait', '--text', 'The bug is reproduced.']);
+  run(['find', 'role', 'button', 'click', '--name', 'Watch the bug']);
+  run(['wait', '--text', 'The editor is showing staging.json.']);
   const context = call('get_page_context');
-  assert.match(context.latestError.label, /503/);
+  assert.equal(context.latestError, null);
   const requests = call('inspect_requests');
-  assert.ok(requests.events.some((e) => e.data.status === 503));
-  assert.equal(call('inspect_errors').total, 1);
-  assert.equal(call('inspect_state').state.Archive.resultCount, 0);
-  assert.ok(call('inspect_timeline').events.some((e) => e.kind === 'error'));
+  assert.equal(
+    requests.events.filter(
+      (e) => e.kind === 'response' && e.data.status === 200,
+    ).length,
+    2,
+  );
+  assert.equal(call('inspect_errors').total, 0);
+  const editor = call('inspect_state').state.FileLoader;
+  assert.equal(editor.selectedFile, 'production.json');
+  assert.equal(editor.displayedFile, 'staging.json');
+  assert.ok(call('inspect_timeline').events.some((e) => e.kind === 'action'));
   const version = call('get_page_context').eventCount;
   for (const tool of tools) {
     const invalid = run(
@@ -73,11 +81,14 @@ try {
     );
   }
   assert.equal(call('get_page_context').eventCount, version);
-  run(['find', 'role', 'button', 'click', '--name', 'Apply fix & verify']);
-  run(['wait', '--text', 'Patched run complete.']);
-  assert.equal(call('inspect_state').state.Archive.resultCount, 3);
+  run(['find', 'role', 'button', 'click', '--name', 'Run with the fix']);
+  run(['wait', '--text', 'The older download was ignored.']);
+  assert.equal(
+    call('inspect_state').state.FileLoader.displayedFile,
+    'production.json',
+  );
   run(['open', base], true);
-  run(['wait', '--text', 'WEBMCP LIVE'], true);
+  run(['wait', '--text', 'Watch the bug'], true);
   const other = run(
     ['webmcp', 'invoke', 'get_page_context', '--params', '{}'],
     true,
@@ -121,7 +132,7 @@ try {
     ) + '\n',
   );
   console.log(
-    'Native WebMCP verified: 5 tools, 5 invalid inputs rejected, 2 isolated tabs, HTTP failure and recovery.',
+    'Native WebMCP verified: 5 tools, 5 invalid inputs rejected, 2 isolated tabs, real URL race and fixed editor.',
   );
 } finally {
   run(['close'], false, true);

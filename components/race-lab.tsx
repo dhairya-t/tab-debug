@@ -1,5 +1,5 @@
 'use client';
-import { SiteHeader, AtlasViews } from './site-header';
+import { SiteHeader } from './site-header';
 import {
   useCallback,
   useEffect,
@@ -427,16 +427,22 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
       <SiteHeader current={app === 'atlas' ? 'atlas' : 'shipping'} />
       <main className="lab-main" data-testid="replay-ready" data-ready={ready}>
         <section className="lab-intro">
-          <h1>{app === 'atlas' ? 'Atlas' : 'Shipping quotes'}</h1>
+          <h1>
+            {app === 'atlas'
+              ? 'A search that shows the previous result'
+              : 'Shipping quotes'}
+          </h1>
           <p>
             {app === 'atlas'
-              ? 'Replay the same search responses in a different order.'
+              ? 'Type a new search before the first one finishes. Its slower response can replace the results you wanted.'
               : 'A sample checkout where an old quote replaces the price for the current address.'}
           </p>
         </section>
 
         <div className="demo-view-bar">
-          {app === 'atlas' && <AtlasViews current="replay" />}
+          <a className="lab-back-link" href="/">
+            ← Back to the Transform demo
+          </a>
           <div className="demo-view-actions">
             <button
               onClick={() => importRef.current?.click()}

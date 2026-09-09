@@ -12,22 +12,15 @@ export function SiteHeader({
         <Terminal size={21} strokeWidth={1.6} />
         tab-debug
       </a>
-      <nav className="site-demos" aria-label="Demos">
-        <span>Demos</span>
+      <nav className="site-demos" aria-label="Examples">
         <a href="/" aria-current={current === 'transform' ? 'page' : undefined}>
-          Transform
+          Demo
         </a>
         <a
-          href="/examples"
+          href="/replay"
           aria-current={current === 'atlas' ? 'page' : undefined}
         >
-          Atlas
-        </a>
-        <a
-          href="/shipping"
-          aria-current={current === 'shipping' ? 'page' : undefined}
-        >
-          Shipping
+          Search example
         </a>
       </nav>
       <nav className="site-links" aria-label="Project">
@@ -43,24 +36,5 @@ export function SiteHeader({
         </a>
       </nav>
     </header>
-  );
-}
-
-export function AtlasViews({ current }: { current: 'live' | 'replay' }) {
-  return (
-    <nav className="atlas-views" aria-label="Atlas views">
-      <a
-        href="/examples"
-        aria-current={current === 'live' ? 'page' : undefined}
-      >
-        Live debugging
-      </a>
-      <a
-        href="/replay"
-        aria-current={current === 'replay' ? 'page' : undefined}
-      >
-        Response replay
-      </a>
-    </nav>
   );
 }

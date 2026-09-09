@@ -43,7 +43,7 @@ The connection observes this local app’s own fetches and selected editor value
 
 HTTP success does not guarantee that the screen shows the right response. A browser agent can inspect the requests **and** the current editor value in the tab it is testing. Tab-debug provides that evidence; it does not automatically diagnose or fix the source code.
 
-The public demo is a reduced reproduction of the same loader, with a simpler UI. The evidence above comes from the full upstream app. No upstream issue or pull request has been submitted.
+The public demo recreates **Load File → Fetch URL** and the JSON-to-YAML editor around the same loader. The scenario is correcting a staging URL to a production URL while the first download is pending. That is a plausible example of the verified overlapping-load sequence, not a reported user incident. The two sample files are fetched from this demo’s own server; the first is deliberately delayed for five seconds. Visitors can watch the walkthrough or use the URL controls themselves. **Read debugging data** presents the actual state/request tool results, with raw output available. It does not run an AI diagnosis. The evidence above comes from the full upstream app. No upstream issue or pull request has been submitted.
 
 ## Verify the fix
 

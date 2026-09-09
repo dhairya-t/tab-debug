@@ -48,7 +48,7 @@ The five tools are `get_page_context`, `inspect_requests`, `inspect_errors`, `in
 
 ## A real UI bug
 
-We reproduced an existing bug in [Transform](https://github.com/ritz078/transform): load two files, and the slower first download can overwrite the newer selection. Both requests return 200, but the editor shows the wrong file.
+We reproduced an existing bug in [Transform](https://github.com/ritz078/transform): use **Load File → Fetch URL**, correct a URL while its download is pending, and the slower first download can overwrite the newer selection. Both requests return 200, but the editor shows the wrong file. The public walkthrough illustrates this with staging and production JSON in a working JSON-to-YAML view. Those sample names describe a plausible user mistake, not a reported user incident. You can watch the sequence or operate the URL loader yourself, then read the actual WebMCP state and response history.
 
 The [live demo](https://tab-debug-dhairya.vercel.app) reduces this to one button, two requests, and the editor value. **Read state** and **Read requests** call the same tools exposed to browser agents. **Run with fix** checks a request number before applying a response.
 
@@ -58,7 +58,7 @@ The [live demo](https://tab-debug-dhairya.vercel.app) reduces this to one button
 
 The [search example](https://tab-debug-dhairya.vercel.app/replay) deliberately lets an old response overwrite newer results. Select **Capture & compare** to run the original handler and a prewritten fix against the same responses. Inspect state after each response, try all six completion orders, or export a recording and Playwright test.
 
-The default inputs produce four failing orders on the original and none on the fixed handler. Change the response order and the result can change. A separate [shipping example](https://tab-debug-dhairya.vercel.app/shipping) uses an independent application handler.
+The default inputs produce four failing orders on the original and none on the fixed handler. Change the response order and the result can change. This is the one optional second example on the site. The previous three-scenario Atlas screen and standalone shipping demo now redirect to the retained demos.
 
 ![Search results with an outdated response, beside the fixed version](docs/media/replay.png)
 
