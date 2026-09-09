@@ -223,7 +223,7 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
   );
 
   useEffect(() => {
-    scope.enterPage(app === 'atlas' ? '/' : '/shipping');
+    scope.enterPage(app === 'atlas' ? '/replay' : '/shipping');
     setOrigin(location.origin);
     const selected =
       new URL(location.href).searchParams.get('implementation') === 'patched'
@@ -319,7 +319,7 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
   };
   const capture = () =>
     operation('Capturing 3 API responses', async () => {
-      scope.enterPage(app === 'atlas' ? '/' : '/shipping');
+      scope.enterPage(app === 'atlas' ? '/replay' : '/shipping');
       setPair(null);
       setLive({});
       setMatrix([]);
@@ -487,7 +487,7 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
 
         <div className="lab-example-tabs">
           <div>
-            <a href="/" aria-current={app === 'atlas' ? 'page' : undefined}>
+            <a href="/replay" aria-current={app === 'atlas' ? 'page' : undefined}>
               01 <span>Archive search</span>
             </a>
             <a
@@ -1013,14 +1013,14 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
                       # Against the original: assertion fails
                     </span>
                     {'\n'}PAGESCOPE_BASE_URL='{origin}
-                    {app === 'atlas' ? '/' : '/shipping'}' \{'\n'} npx
+                    {app === 'atlas' ? '/replay' : '/shipping'}' \{'\n'} npx
                     playwright test {fileName}
                     {'\n\n'}
                     <span className="command-comment">
                       # Same recording, patched application: passes
                     </span>
                     {'\n'}PAGESCOPE_BASE_URL='{origin}
-                    {app === 'atlas' ? '/' : '/shipping'}
+                    {app === 'atlas' ? '/replay' : '/shipping'}
                     ?implementation=patched' \{'\n'} npx playwright test{' '}
                     {fileName}
                   </pre>

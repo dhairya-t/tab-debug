@@ -18,6 +18,7 @@ export const metadata: Metadata = {
   description:
     'Expose page state, requests, and errors to browser agents through WebMCP. Next.js integration and working examples.',
   alternates: { canonical: '/' },
+  icons: { icon: { url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' } },
   openGraph: {
     type: 'website',
     url: '/',
@@ -27,8 +28,8 @@ export const metadata: Metadata = {
       'Page-specific debugging tools for browser agents. Built by Dhairya Thakkar.',
     images: [
       {
-        url: '/images/lena-delta.jpg',
-        alt: 'Lena River Delta, a NASA/USGS satellite observation in the tab-debug demo.',
+        url: '/images/tab-debug-preview.png',
+        alt: 'tab-debug showing a reproduced stale file response from Transform.',
       },
     ],
   },
@@ -37,7 +38,7 @@ export const metadata: Metadata = {
     title: 'tab-debug — Browser debugging tools',
     description:
       'Page-specific debugging tools for browser agents. Built by Dhairya Thakkar.',
-    images: ['/images/lena-delta.jpg'],
+    images: ['/images/tab-debug-preview.png'],
   },
 };
 

@@ -1,4 +1,4 @@
-import RaceLab from '@/components/race-lab';
+import TransformDemo from '@/components/transform-demo';
 export default function Page() {
-  return <RaceLab />;
+  return <TransformDemo />;
 }

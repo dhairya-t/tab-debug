@@ -84,7 +84,7 @@ try {
   ).data.output;
   assert.notEqual(before.pageId, other.pageId);
   assert.equal(other.latestError, null);
-  run(['open', new URL('/', base).href]);
+  run(['open', new URL('/replay', base).href]);
   run(['wait', '--text', 'Capture & compare']);
   run(['find', 'role', 'button', 'click', '--name', 'Capture & compare']);
   run(['wait', '--text', 'Q2 is the first different state update.']);

@@ -46,9 +46,17 @@ The five tools are `get_page_context`, `inspect_requests`, `inspect_errors`, `in
 
 [Full setup and working example](https://tab-debug-dhairya.vercel.app/setup). The example installs and imports the same archive served by the command above.
 
-## Replay demo
+## A real UI bug
 
-The [search example](https://tab-debug-dhairya.vercel.app) deliberately lets an old response overwrite newer results. Select **Capture & compare** to run the original handler and a prewritten fix against the same responses. Inspect state after each response, try all six completion orders, or export a recording and Playwright test.
+We reproduced an existing bug in [Transform](https://github.com/ritz078/transform): load two files, and the slower first download can overwrite the newer selection. Both requests return 200, but the editor shows the wrong file.
+
+The [live demo](https://tab-debug-dhairya.vercel.app) reduces this to one button, two requests, and the editor value. **Read state** and **Read requests** call the same tools exposed to browser agents. **Run with fix** checks a request number before applying a response.
+
+[Full upstream reproduction, pinned source, license, and small fix](examples/transform). We first verified the bug in the unmodified app, then added tab-debug and independently checked its state against the rendered editor. The patched app keeps the correct file. Only response timing and fixture JSON are controlled; the bug was not injected.
+
+## Optional replay experiments
+
+The [search example](https://tab-debug-dhairya.vercel.app/replay) deliberately lets an old response overwrite newer results. Select **Capture & compare** to run the original handler and a prewritten fix against the same responses. Inspect state after each response, try all six completion orders, or export a recording and Playwright test.
 
 The default inputs produce four failing orders on the original and none on the fixed handler. Change the response order and the result can change. A separate [shipping example](https://tab-debug-dhairya.vercel.app/shipping) uses an independent application handler.
 

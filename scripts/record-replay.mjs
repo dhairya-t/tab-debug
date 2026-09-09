@@ -9,7 +9,7 @@ const page = await context.newPage();
 // Presentation pacing only. All verification waits for observable conditions.
 const beat = ms => page.waitForTimeout(ms);
 try {
-  await page.goto(base); await page.waitForFunction(() => !!window.__PAGESCOPE_REPLAY__);
+  await page.goto(new URL('/replay', base).href); await page.waitForFunction(() => !!window.__PAGESCOPE_REPLAY__);
   await page.evaluate(() => document.fonts.ready); await beat(2200);
   await page.getByRole('button', { name: 'Capture & compare' }).click();
   await page.locator('.comparison-grid').scrollIntoViewIfNeeded();
@@ -20,10 +20,17 @@ try {
   await page.getByRole('button', { name: 'Check all 6 orders' }).click(); await beat(4300);
   await page.screenshot({ path: 'docs/media/replay.png', fullPage: true });
   let download = page.waitForEvent('download'); await page.getByRole('button', { name: 'Save incident', exact: true }).click();
-  await (await download).saveAs('../pagescope-atlas.incident.json'); await beat(2000);
+  await (await download).saveAs('../tab-debug-atlas.incident.json'); await beat(2000);
   download = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export regression test', exact: true }).click();
-  await (await download).saveAs('../pagescope-atlas.spec.ts'); await beat(3200);
-  await page.locator('.comparison-grid').scrollIntoViewIfNeeded(); await beat(3200);
-  await context.close(); copyFileSync(await page.video().path(), '../pagescope-demo.webm');
+  await (await download).saveAs('../tab-debug-atlas.spec.ts'); await beat(3200);
+  await page.getByRole('button', { name: '5 tools live', exact: true }).click();
+  await page.getByRole('button', { name: 'inspect_state', exact: true }).click();
+  await page.getByTestId('lab-tool-result').waitFor(); await beat(3200);
+  await page.keyboard.press('Escape');
+  await page.getByRole('link', { name: 'Add to your app', exact: true }).click();
+  await page.getByRole('heading', { name: '2. Wrap your layout', exact: true }).scrollIntoViewIfNeeded();
+  await page.getByRole('button', { name: 'Copy app/layout.tsx' }).click(); await beat(3200);
+  await page.screenshot({ path: 'docs/media/setup.png', fullPage: true });
+  await context.close(); copyFileSync(await page.video().path(), '../tab-debug-demo.webm');
   console.log('Recorded the actual replay workflow and exported its incident and regression test.');
 } finally { await browser.close(); }

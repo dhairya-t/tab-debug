@@ -2,7 +2,7 @@ import { test, expect, type Page, type Download } from '@playwright/test';
 import { parseIncident } from '../packages/tab-debug/src/replay';
 
 test.use({ reducedMotion: 'reduce' });
-async function ready(page: Page, route = '/') {
+async function ready(page: Page, route = '/replay') {
   await page.goto(route);
   await expect(page.getByTestId('replay-ready')).toHaveAttribute(
     'data-ready',
@@ -86,7 +86,7 @@ test('an exported incident reopens in a fresh context with API access blocked', 
       apiCalls++;
       return route.abort();
     });
-    await other.goto(new URL('/', page.url()).href);
+    await other.goto(new URL('/replay', page.url()).href);
     await expect(other.getByTestId('replay-ready')).toHaveAttribute(
       'data-ready',
       'true',

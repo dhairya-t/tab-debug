@@ -12,7 +12,7 @@ mkdirSync(directory, { recursive: true });
 const browser = await chromium.launch({ executablePath: chromePath() });
 try {
   const page = await browser.newPage({ reducedMotion: 'reduce' });
-  await page.goto(base);
+  await page.goto(new URL('/replay', base).href);
   await page.waitForFunction(() => !!window.__PAGESCOPE_REPLAY__);
   await page
     .getByRole('button', { name: 'Capture & compare', exact: true })
@@ -68,7 +68,7 @@ async function execute(url) {
     throw new Error(stderr || stdout);
   }
 }
-const original = await execute(new URL('/', base).href);
+const original = await execute(new URL('/replay', base).href);
 assert.ok(
   original.report.suites.length,
   JSON.stringify(original.report.errors),
@@ -80,7 +80,7 @@ const message = stripVTControlCharacters(failure.error.message);
 assert.match(message, /toEqual/);
 assert.match(message, /namibia/);
 assert.match(message, /lena/);
-const patched = await execute(new URL('/?implementation=patched', base).href);
+const patched = await execute(new URL('/replay?implementation=patched', base).href);
 assert.equal(patched.code, 0);
 assert.equal(patched.report.stats.expected, 1);
 assert.equal(patched.report.stats.unexpected, 0);

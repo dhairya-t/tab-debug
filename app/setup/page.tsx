@@ -43,7 +43,7 @@ export default function Setup() {
           tab-debug
         </a>
         <nav>
-          <a href="/">Replay demo</a>
+          <a href="/">File loading demo</a>
           <a href="/examples">Errors & requests</a>
           <a href="https://github.com/dhairya-t/tab-debug">
             Source <ArrowUpRight size={13} />
@@ -65,6 +65,10 @@ export default function Setup() {
           <p>
             Expose this tab’s requests, errors, and selected state to a browser
             agent. No separate MCP server.
+          </p>
+          <p>
+            Your installation observes your own app, in your own tab. It has no
+            connection to this demo’s tabs and sends no telemetry.
           </p>
           <section id="install">
             <h2>1. Install</h2>
