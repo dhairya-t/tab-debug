@@ -42,12 +42,12 @@ import {
   toolNames,
   type ToolName,
   type TraceEvent,
-} from '@/packages/pagescope/src/core';
+} from '@/packages/tab-debug/src/core';
 import {
   PageScopeProvider,
   PageScopeBoundary,
   useWebMCP,
-} from '@/packages/pagescope/src/react';
+} from '@/packages/tab-debug/src/react';
 import { DemoController, type ArchivePhoto } from '@/lib/demo/controller';
 import { scenarios, type Scenario } from '@/lib/demo/data';
 const REPO = 'https://github.com/dhairya-t/pagescope';
@@ -718,7 +718,7 @@ export default function Home() {
           </a>
           <span>Built for humans. Legible to agents.</span>
           <a
-            href={`${REPO}/tree/main/packages/pagescope`}
+            href={`${REPO}/tree/main/packages/tab-debug`}
             target="_blank"
             rel="noreferrer"
           >

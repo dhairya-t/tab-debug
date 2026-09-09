@@ -1,7 +1,7 @@
 {
-  "name": "@dhairya-t/pagescope",
-  "version": "0.2.0",
-  "description": "Opt-in page-local diagnostic tools for browser agents over WebMCP",
+  "name": "@dhairya-t/tab-debug",
+  "version": "0.3.0",
+  "description": "Page-specific WebMCP debugging tools for browser agents",
   "type": "module",
   "license": "MIT",
   "files": [
@@ -25,16 +25,30 @@
     "./replay": {
       "types": "./dist/replay.d.ts",
       "import": "./dist/replay.js"
+    },
+    "./browser": {
+      "types": "./dist/browser.d.ts",
+      "import": "./dist/browser.js"
+    },
+    "./next": {
+      "types": "./dist/next.d.ts",
+      "import": "./dist/next.js"
     }
   },
   "bin": {
-    "pagescope": "./dist/cli.js"
+    "tab-debug": "./dist/cli.js"
   },
   "peerDependencies": {
-    "react": ">=18"
+    "react": ">=18",
+    "next": ">=14"
   },
   "peerDependenciesMeta": {
-    "react": { "optional": true }
+    "react": {
+      "optional": true
+    },
+    "next": {
+      "optional": true
+    }
   },
   "scripts": {
     "build": "tsc -p tsconfig.json"

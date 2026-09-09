@@ -6,7 +6,7 @@ const [command, file, output] = process.argv.slice(2);
 try {
   if (!file || !['inspect', 'test'].includes(command))
     throw new Error(
-      'Usage: pagescope inspect incident.json | pagescope test incident.json regression.spec.ts',
+      'Usage: tab-debug inspect incident.json | tab-debug test incident.json regression.spec.ts',
     );
   if (statSync(file).size > 200_000) throw new Error('Incident exceeds 200KB');
   const incident = parseIncident(readFileSync(file, 'utf8'));

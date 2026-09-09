@@ -1,10 +1,10 @@
-import { PageScope } from '../../packages/pagescope/src/core.ts';
+import { PageScope } from '../../packages/tab-debug/src/core.ts';
 import {
   createIncident,
   type Incident,
   type Json,
   type Operation,
-} from '../../packages/pagescope/src/replay.ts';
+} from '../../packages/tab-debug/src/replay.ts';
 import { appIds, type AppKind } from './models.ts';
 
 /** Only these selected fixture fields enter a recording. Raw response bodies are never retained. */

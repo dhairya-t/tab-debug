@@ -1,0 +1,22 @@
+{
+  "mode": "development",
+  "origin": "http://localhost:3002",
+  "checks": [
+    "default development wrapper exposes five real WebMCP tools",
+    "state hook exposes selected fields",
+    "client navigation changes page context and removes old page state",
+    "shared application state remains mounted across navigation"
+  ],
+  "stateAfterNavigation": {
+    "pageId": "411ad767-0079-4faf-a7c3-66bb37d4b27c",
+    "route": "/other",
+    "state": {
+      "Counter": {
+        "count": 1
+      },
+      "Other": {
+        "visible": true
+      }
+    }
+  }
+}

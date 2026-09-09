@@ -1,6 +1,6 @@
 {
-  "name": "pagescope-demo",
-  "version": "0.2.0",
+  "name": "tab-debug-demo",
+  "version": "0.3.0",
   "private": true,
   "engines": {
     "node": ">=22.13.0"
@@ -12,9 +12,9 @@
     "lint": "oxlint",
     "format": "oxfmt",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:unit": "node --test packages/pagescope/test/*.test.ts",
+    "test:unit": "node --test packages/tab-debug/test/*.test.ts",
     "test:e2e": "playwright test",
-    "build:sdk": "tsc -p packages/pagescope/tsconfig.json",
+    "build:sdk": "tsc -p packages/tab-debug/tsconfig.json",
     "check": "npm run typecheck && npm run test:unit && npm run build:sdk",
     "build:vercel": "next build",
     "dev:next": "next dev --port 3001",
@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@base-ui/react": "1.7.0",
+    "@dhairya-t/tab-debug": "file:public/downloads/dhairya-t-tab-debug-0.3.0.tgz",
     "class-variance-authority": "0.7.1",
     "clsx": "2.1.1",
     "lucide-react": "1.31.0",

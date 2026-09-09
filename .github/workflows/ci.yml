@@ -1,4 +1,4 @@
-name: Verify PageScope
+name: Verify tab-debug
 on: [push, pull_request]
 jobs:
   verify:
@@ -13,6 +13,19 @@ jobs:
       - run: npm run check
       - run: npm run build:vercel
       - run: npx playwright install --with-deps chromium
+      - name: Install the SDK in a separate Next.js app
+        run: npm ci --prefix examples/next-app
+      - name: Verify development integration and navigation
+        run: node scripts/verify-next.mjs
+        env:
+          NEXT_EXAMPLE_MANAGED: '1'
+      - name: Build separate production app
+        run: npm run build --prefix examples/next-app
+      - name: Verify production defaults
+        run: node scripts/verify-next.mjs
+        env:
+          NEXT_EXAMPLE_MANAGED: '1'
+          NEXT_EXAMPLE_MODE: production
       - name: Start production demo
         run: npm run start:next > /tmp/pagescope-server.log 2>&1 &
       - name: Wait for production server

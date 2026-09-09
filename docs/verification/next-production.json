@@ -1,0 +1,7 @@
+{
+  "mode": "production",
+  "origin": "http://localhost:3002",
+  "checks": [
+    "default production integration registers no tools and leaves app interactive"
+  ]
+}

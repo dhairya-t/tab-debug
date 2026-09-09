@@ -4,12 +4,62 @@ import {
   createContext,
   useContext,
   useEffect,
+  useLayoutEffect,
+  useMemo,
   useState,
   useSyncExternalStore,
   type ReactNode,
 } from 'react';
 import { PageScope } from './core.ts';
 import { registerPageTools, type ModelContext } from './webmcp.ts';
+import { attachBrowserTools } from './browser.ts';
+
+const DebugContext = createContext<{ scope: PageScope | null; route: string }>({
+  scope: null,
+  route: '/',
+});
+
+/** React integration; Next.js users can use TabDebug from /next. */
+export function TabDebugProvider({
+  children,
+  route,
+  enabled = false,
+}: {
+  children: ReactNode;
+  route: string;
+  enabled?: boolean;
+}) {
+  const [scope] = useState(() => new PageScope());
+  useLayoutEffect(() => {
+    if (enabled) scope.enterPage(route);
+  }, [enabled, route, scope]);
+  useLayoutEffect(() => {
+    if (!enabled) return;
+    const connection = attachBrowserTools(scope);
+    return () => connection.dispose();
+  }, [enabled, scope]);
+  const value = useMemo(
+    () => ({ scope: enabled ? scope : null, route }),
+    [enabled, route, scope],
+  );
+  return (
+    <DebugContext.Provider value={value}>{children}</DebugContext.Provider>
+  );
+}
+
+/** Only explicitly supplied values are exposed; a no-op when disabled. */
+export function useDebugState(name: string, value: unknown) {
+  const { scope, route } = useContext(DebugContext);
+  useEffect(() => {
+    scope?.setState(name, value);
+  }, [scope, route, name, value]);
+  useEffect(() => () => scope?.removeState(name), [scope, route, name]);
+}
+
+/** For handled errors and explicit diagnostic events. Null when disabled. */
+export function useDebug() {
+  return useContext(DebugContext).scope;
+}
 const Context = createContext<PageScope | null>(null);
 export function PageScopeProvider({
   scope,

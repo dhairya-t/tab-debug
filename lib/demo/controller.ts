@@ -1,5 +1,5 @@
-import { PageScope } from '../../packages/pagescope/src/core.ts';
-import { CompletionGate } from '../../packages/pagescope/src/replay.ts';
+import { PageScope } from '../../packages/tab-debug/src/core.ts';
+import { CompletionGate } from '../../packages/tab-debug/src/replay.ts';
 import { photos, type Photo, type Scenario } from './data.ts';
 export type ArchivePhoto = Omit<Photo, 'title'> & { title: string | null };
 export type DemoState = {

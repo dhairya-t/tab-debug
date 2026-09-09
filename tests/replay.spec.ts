@@ -1,5 +1,5 @@
 import { test, expect, type Page, type Download } from '@playwright/test';
-import { parseIncident } from '../packages/pagescope/src/replay';
+import { parseIncident } from '../packages/tab-debug/src/replay';
 
 test.use({ reducedMotion: 'reduce' });
 async function ready(page: Page, route = '/') {

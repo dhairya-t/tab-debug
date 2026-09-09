@@ -36,8 +36,8 @@ import {
   PageScope,
   toolNames,
   type ToolName,
-} from '@/packages/pagescope/src/core';
-import { useWebMCP } from '@/packages/pagescope/src/react';
+} from '@/packages/tab-debug/src/core';
+import { useWebMCP } from '@/packages/tab-debug/src/react';
 import {
   generatePlaywright,
   installReplayTarget,
@@ -49,7 +49,7 @@ import {
   type Incident,
   type Json,
   type ReplayResult,
-} from '@/packages/pagescope/src/replay';
+} from '@/packages/tab-debug/src/replay';
 import { captureIncident } from '@/lib/lab/capture';
 import {
   appIds,

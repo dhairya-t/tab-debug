@@ -2,7 +2,7 @@ import {
   type Json,
   type Operation,
   type ReplayAdapter,
-} from '../../packages/pagescope/src/replay.ts';
+} from '../../packages/tab-debug/src/replay.ts';
 
 export type Variant = 'original' | 'patched';
 export type AppKind = 'atlas' | 'shipping';
