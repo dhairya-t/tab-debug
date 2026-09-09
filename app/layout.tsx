@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://tab-debug-dhairya.vercel.app'),
   title: 'tab-debug — Browser debugging tools',
   description:
-    'Expose page state, requests, and errors to browser agents through WebMCP. Next.js integration and working examples.',
+    'Let your coding agent read requests, errors, and selected state from your running app through WebMCP. Next.js integration and working examples.',
   alternates: { canonical: '/' },
   icons: { icon: { url: '/favicon.svg', type: 'image/svg+xml', sizes: 'any' } },
   openGraph: {

@@ -29,41 +29,8 @@
   outline: 2px solid #2459d3;
   outline-offset: 3px;
 }
-.lab-header {
-  min-height: 66px;
-  border-bottom: 1px solid var(--line);
-  padding: 12px 32px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-}
-.lab-brand {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  font:
-    600 20px var(--font-geist-mono),
-    monospace;
-  letter-spacing: -0.7px;
-}
-.lab-header nav {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  font-size: 14px;
-}
-.lab-header nav a {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-}
-.lab-header a:hover,
 .lab-footnote a:hover {
   color: #2459d3;
-}
-.setup-link {
-  font-weight: 550;
 }
 .native-pill {
   display: flex;
@@ -106,39 +73,6 @@
   margin: 0;
   color: var(--muted);
   font-size: 16px;
-}
-.lab-example-tabs {
-  border-bottom: 1px solid var(--line);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-}
-.lab-example-tabs > div {
-  display: flex;
-  gap: 24px;
-}
-.lab-example-tabs a {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  border-bottom: 2px solid transparent;
-  padding: 10px 0;
-  color: var(--muted);
-  font-size: 14px;
-}
-.lab-example-tabs a[aria-current] {
-  border-color: var(--ink);
-  color: var(--ink);
-}
-.lab-example-tabs > button {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: none;
-  border: 0;
-  font-size: 14px;
-  color: var(--muted);
 }
 .capture-controls {
   display: grid;
@@ -882,19 +816,6 @@
   }
 }
 @media (max-width: 680px) {
-  .lab-header {
-    padding: 14px 18px;
-    gap: 14px;
-    align-items: flex-start;
-    flex-wrap: wrap;
-  }
-  .lab-header nav {
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .lab-brand {
-    font-size: 20px;
-  }
   .lab-main {
     padding: 0 18px;
   }
@@ -909,15 +830,6 @@
   }
   .lab-intro p {
     font-size: 16px;
-  }
-  .lab-example-tabs {
-    flex-wrap: wrap;
-  }
-  .lab-example-tabs > div {
-    gap: 16px;
-  }
-  .lab-example-tabs > button {
-    padding: 8px 0;
   }
   .capture-controls {
     grid-template-columns: 1fr;

@@ -1,5 +1,6 @@
 'use client';
 import { useEffect, useState, useSyncExternalStore } from 'react';
+import { SiteHeader, AtlasViews } from '@/components/site-header';
 import {
   ArrowUpRight,
   ArrowRight,
@@ -216,84 +217,60 @@ export default function Home() {
   return (
     <PageScopeProvider scope={scope}>
       <div className="app-shell">
-        <header className="topbar">
-          <a href="/" className="brand">
-            <Crosshair size={22} strokeWidth={1.5} />
-            tab-debug
-          </a>
-          <nav><a href="/">Replay demo</a><a href="/setup">Add to your app</a>
-            <Dialog>
-              <DialogTrigger className="text-button">
-                How it works
-              </DialogTrigger>
-              <DialogContent className="about-dialog">
-                <DialogHeader>
-                  <DialogTitle>Browser debugging tools</DialogTitle>
-                  <DialogDescription>
-                    tab-debug turns explicitly registered state and diagnostics
-                    into five read-only WebMCP tools.
-                  </DialogDescription>
-                </DialogHeader>
-                <ol className="how-list">
-                  <li>
-                    <strong>Choose what to record</strong>
-                    <p>
-                      Wrap selected requests with scope.fetch, register state,
-                      and add an error boundary. No global monkey-patching.
-                    </p>
-                  </li>
-                  <li>
-                    <strong>Connect a browser agent</strong>
-                    <p>
-                      Native WebMCP exposes the tool registry to compatible
-                      browser agents. This inspector calls the same validated
-                      executors.
-                    </p>
-                  </li>
-                  <li>
-                    <strong>Run an example</strong>
-                    <p>
-                      The experiments use real HTTP responses and a real React
-                      error boundary. “Apply fix” selects a documented,
-                      prewritten implementation; it does not generate code.
-                    </p>
-                  </li>
-                </ol>
-                <p className="dialog-note">
-                  Next.js already provides server MCP tools. tab-debug
-                  complements them with opt-in browser context. The SDK defaults
-                  to no network transport. Treat redaction as a backstop, not
-                  permission to register secrets.
-                </p>
-                <a
-                  className="dialog-link"
-                  href={`${REPO}#quick-start`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Read the integration guide <ArrowUpRight size={14} />
-                </a>
-              </DialogContent>
-            </Dialog>
-            <a href={REPO} target="_blank" rel="noreferrer">
-              Source <ArrowUpRight size={14} />
-            </a>
-          </nav>
-        </header>
+        <SiteHeader current="atlas" />
         <main>
           <section className="heading">
-            <div>
-              
-              <h1>Errors and requests</h1>
-            </div>
-            <p>
-              Inspect a failed request, a search race, or a React error.
-            </p>
+            <h1>Atlas</h1>
+            <p>A sample photo archive with three reproducible UI bugs.</p>
           </section>
+          <div className="demo-view-bar">
+            <AtlasViews current="live" />
+            <div className="demo-view-actions">
+              <Dialog>
+                <DialogTrigger className="text-button">
+                  How it works
+                </DialogTrigger>
+                <DialogContent className="about-dialog">
+                  <DialogHeader>
+                    <DialogTitle>Browser debugging tools</DialogTitle>
+                    <DialogDescription>
+                      The inspector shows what a browser agent can read from
+                      this sample app through WebMCP.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <ol className="how-list">
+                    <li>
+                      <strong>Choose what to record</strong>
+                      <p>
+                        Atlas records its requests, search state, and React
+                        errors. Your app chooses its own state to share.
+                      </p>
+                    </li>
+                    <li>
+                      <strong>Connect a browser agent</strong>
+                      <p>
+                        A compatible browser agent can read the same information
+                        shown in this inspector.
+                      </p>
+                    </li>
+                    <li>
+                      <strong>Run an example</strong>
+                      <p>
+                        Choose a bug, reproduce it, then inspect the request or
+                        state that explains it. “Apply fix” runs a prewritten
+                        correction; it does not generate code.
+                      </p>
+                    </li>
+                  </ol>
+                  <a className="dialog-link" href="/setup">
+                    Read the integration guide <ArrowUpRight size={14} />
+                  </a>
+                </DialogContent>
+              </Dialog>
+            </div>
+          </div>
           <div className="experiment-bar">
-            <span className="experiment-label">
-              <span className="number">01</span> The experiment
-            </span>
+            <span className="experiment-label">Choose a bug</span>
             <Select
               value={state.scenario}
               onValueChange={(value) => {
@@ -538,13 +515,7 @@ export default function Home() {
                       : 'connecting'}
                   </span>
                 </span>
-                <h3>
-                  {state.phase === 'broken'
-                    ? 'The evidence is right here.'
-                    : state.phase === 'verified'
-                      ? 'A fix you can verify.'
-                      : 'Nothing lost in translation.'}
-                </h3>
+                <h3>Page diagnostics</h3>
                 <p>
                   {events.length} events{' '}
                   <span className="count-separator">/</span> {errors} captured
@@ -603,12 +574,7 @@ export default function Home() {
                     <div className="inspector-empty">
                       <Terminal size={24} />
                       <p>
-                        Start with a question.
-                        <small>
-                          Reproduce a bug, then call a tool
-                          <br />
-                          to inspect its actual runtime evidence.
-                        </small>
+                        Choose a tool to read this page’s debugging information.
                       </p>
                     </div>
                   )}
@@ -652,9 +618,6 @@ export default function Home() {
           </div>
           <section className="diagnosis">
             <div className="diagnosis-copy">
-              <p className="eyebrow">
-                <span className="number">02</span> UNDER THE SURFACE
-              </p>
               <h3>{current.label}</h3>
               <p>{current.cause}</p>
               <p className="fix-explanation">

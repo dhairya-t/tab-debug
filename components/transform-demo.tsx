@@ -2,7 +2,8 @@
 // Loader adapted from ritz078/transform, MIT, copyright 2019 Ritesh Kumar.
 // Full notice: public/THIRD_PARTY_NOTICES.txt. Original app verified separately.
 import { useEffect, useRef, useState } from 'react';
-import { Terminal, ArrowUpRight, ArrowRight, Check, Play } from 'lucide-react';
+import { ArrowUpRight, ArrowRight, Check, Play } from 'lucide-react';
+import { SiteHeader } from './site-header';
 import {
   TabDebugProvider,
   useDebug,
@@ -250,8 +251,8 @@ function FileLoader() {
           </>
         ) : (
           <p>
-            After a run, inspect the editor value and the two HTTP responses.
-            These are the same tools exposed to a WebMCP-capable browser agent.
+            After a run, inspect the editor value and the two HTTP responses. A
+            WebMCP-capable browser agent can read the same information.
           </p>
         )}
       </section>
@@ -262,20 +263,7 @@ function FileLoader() {
 export default function TransformDemo() {
   return (
     <div className="replay-app">
-      <header className="lab-header">
-        <a className="lab-brand" href="/">
-          <Terminal size={21} />
-          tab-debug
-        </a>
-        <nav>
-          <a href="/setup">
-            Add to your app <ArrowRight size={14} />
-          </a>
-          <a href="https://github.com/dhairya-t/tab-debug">
-            GitHub <ArrowUpRight size={13} />
-          </a>
-        </nav>
-      </header>
+      <SiteHeader current="transform" />
       <main className="file-main">
         <section className="file-intro">
           <h1>Debug the page your agent is testing.</h1>
@@ -315,9 +303,9 @@ export default function TransformDemo() {
             a download is still the newest before updating the editor.
           </p>
           <p>
-            <a href="/setup">Install in your own app</a> to expose that app’s
-            own tab. No account or separate MCP server. No connection to my
-            tabs. Native WebMCP requires a compatible browser.
+            <a href="/setup">Add tab-debug to your app</a> so your agent can
+            read its requests, errors, and the state you choose to share.
+            Requires a WebMCP-capable browser. No separate MCP server.
           </p>
         </div>
         <footer className="file-footer">
@@ -325,7 +313,6 @@ export default function TransformDemo() {
             Built by <a href="https://github.com/dhairya-t">Dhairya Thakkar</a>{' '}
             · MIT
           </span>
-          <a href="/replay">Response replay experiments ↗</a>
         </footer>
       </main>
     </div>

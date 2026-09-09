@@ -1,4 +1,5 @@
 'use client';
+import { SiteHeader, AtlasViews } from './site-header';
 import {
   useCallback,
   useEffect,
@@ -63,7 +64,6 @@ import './race-lab.css';
 
 type Pair = { original: ReplayResult; patched: ReplayResult };
 type ScheduleResult = { order: string[]; original: boolean; patched: boolean };
-const repo = 'https://github.com/dhairya-t/tab-debug';
 const pause = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 const pretty = (value: unknown) =>
@@ -424,86 +424,65 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
 
   return (
     <div className="replay-app">
-      <header className="lab-header">
-        <a href="/" className="lab-brand">
-          <Terminal size={21} strokeWidth={1.6} />
-          tab-debug
-        </a>
-        <nav>
-          <a href="/setup" className="setup-link">
-            Add to your app
-          </a>
-          <a href={repo} target="_blank" rel="noreferrer">
-            Source <ArrowUpRight size={13} />
-          </a>
-          <Dialog>
-            <DialogTrigger className="native-pill">
-              <i className={native === 'native' ? 'connected' : ''} />
-              {native === 'native' ? '5 tools live' : 'Agent tools'}
-            </DialogTrigger>
-            <DialogContent className="lab-dialog">
-              <DialogHeader>
-                <DialogTitle>Browser tools</DialogTitle>
-                <DialogDescription>
-                  {native === 'native'
-                    ? 'Native WebMCP is registered. These are the same tools a browser agent can call.'
-                    : 'This browser uses the local executor. Native WebMCP is available in compatible browsers.'}
-                </DialogDescription>
-              </DialogHeader>
-              <div className="tool-chooser">
-                {toolNames.map((name) => (
-                  <button
-                    key={name}
-                    className={tool === name ? 'active' : ''}
-                    onClick={() => {
-                      setTool(name);
-                      setToolResult(scope.callTool(name));
-                    }}
-                  >
-                    {name}
-                    <ArrowUpRight size={12} />
-                  </button>
-                ))}
-              </div>
-              <pre data-testid="lab-tool-result">
-                {toolResult
-                  ? JSON.stringify(toolResult, null, 2)
-                  : 'Select a tool to see its output.'}
-              </pre>
-              <code>agent-browser webmcp invoke inspect_state</code>
-            </DialogContent>
-          </Dialog>
-        </nav>
-      </header>
+      <SiteHeader current={app === 'atlas' ? 'atlas' : 'shipping'} />
       <main className="lab-main" data-testid="replay-ready" data-ready={ready}>
         <section className="lab-intro">
-          <h1>{app === 'atlas' ? 'Search race' : 'Shipping quote race'}</h1>
+          <h1>{app === 'atlas' ? 'Atlas' : 'Shipping quotes'}</h1>
           <p>
             {app === 'atlas'
-              ? 'An old response replaces the latest search results.'
-              : 'An old shipping quote replaces the price for the current address.'}
+              ? 'Replay the same search responses in a different order.'
+              : 'A sample checkout where an old quote replaces the price for the current address.'}
           </p>
         </section>
 
-        <div className="lab-example-tabs">
-          <div>
-            <a href="/replay" aria-current={app === 'atlas' ? 'page' : undefined}>
-              01 <span>Archive search</span>
-            </a>
-            <a
-              href="/shipping"
-              aria-current={app === 'shipping' ? 'page' : undefined}
+        <div className="demo-view-bar">
+          {app === 'atlas' && <AtlasViews current="replay" />}
+          <div className="demo-view-actions">
+            <button
+              onClick={() => importRef.current?.click()}
+              disabled={!!busy || !ready}
             >
-              02 <span>Shipping quote</span>
-            </a>
+              <Upload size={13} />
+              Open incident
+            </button>
+            <Dialog>
+              <DialogTrigger className="native-pill">
+                <i className={native === 'native' ? 'connected' : ''} />
+                {native === 'native' ? '5 tools live' : 'Agent tools'}
+              </DialogTrigger>
+              <DialogContent className="lab-dialog">
+                <DialogHeader>
+                  <DialogTitle>Browser tools</DialogTitle>
+                  <DialogDescription>
+                    {native === 'native'
+                      ? 'Native WebMCP is registered. These are the same tools a browser agent can call.'
+                      : 'This browser uses the local executor. Native WebMCP is available in compatible browsers.'}
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="tool-chooser">
+                  {toolNames.map((name) => (
+                    <button
+                      key={name}
+                      className={tool === name ? 'active' : ''}
+                      onClick={() => {
+                        setTool(name);
+                        setToolResult(scope.callTool(name));
+                      }}
+                    >
+                      {name}
+                      <ArrowUpRight size={12} />
+                    </button>
+                  ))}
+                </div>
+                <pre data-testid="lab-tool-result">
+                  {toolResult
+                    ? JSON.stringify(toolResult, null, 2)
+                    : 'Select a tool to see its output.'}
+                </pre>
+                <code>agent-browser webmcp invoke inspect_state</code>
+              </DialogContent>
+            </Dialog>
           </div>
-          <button
-            onClick={() => importRef.current?.click()}
-            disabled={!!busy || !ready}
-          >
-            <Upload size={13} />
-            Open incident
-          </button>
           <input
             ref={importRef}
             type="file"

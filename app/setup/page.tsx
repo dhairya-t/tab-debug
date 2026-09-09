@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { Terminal, ArrowUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
+import { SiteHeader } from '@/components/site-header';
 import { CopyCode } from '@/components/copy-code';
 import { SetupExample } from '@/components/setup-example';
 import '@/components/race-lab.css';
@@ -37,19 +38,7 @@ npx agent-browser webmcp invoke inspect_state --params '{}'`;
 export default function Setup() {
   return (
     <div className="replay-app">
-      <header className="lab-header">
-        <a className="lab-brand" href="/">
-          <Terminal size={21} />
-          tab-debug
-        </a>
-        <nav>
-          <a href="/">File loading demo</a>
-          <a href="/examples">Errors & requests</a>
-          <a href="https://github.com/dhairya-t/tab-debug">
-            Source <ArrowUpRight size={13} />
-          </a>
-        </nav>
-      </header>
+      <SiteHeader current="setup" />
       <main className="setup-main">
         <aside aria-label="Setup sections">
           <span>Next.js App Router</span>
@@ -63,12 +52,12 @@ export default function Setup() {
         <article>
           <h1>Add to your app</h1>
           <p>
-            Expose this tab’s requests, errors, and selected state to a browser
-            agent. No separate MCP server.
+            Let your coding agent read requests, errors, and selected state from
+            your running app. No separate MCP server.
           </p>
           <p>
-            Your installation observes your own app, in your own tab. It has no
-            connection to this demo’s tabs and sends no telemetry.
+            This runs in your own app, only during development by default. It
+            sends no telemetry and has no connection to this demo.
           </p>
           <section id="install">
             <h2>1. Install</h2>
