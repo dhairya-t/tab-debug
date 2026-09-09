@@ -1,5 +1,15 @@
 # Architecture
 
+## Next.js integration
+
+`TabDebug` from the `/next` package entry uses the current pathname and wraps the existing children in a React provider. It activates only when `NODE_ENV` is `development`, unless explicitly overridden. It renders no DOM and does not remount the application on navigation.
+
+The provider installs a temporary `window.fetch` wrapper and listeners for uncaught errors and unhandled rejections. Fetch passes the original input and init through unchanged, retaining only method, path, status, and duration. A `Request` body is never consumed by the recorder. Teardown restores the original fetch only if it still owns the global slot, removes listeners, aborts tool registrations, and invalidates late diagnostic writes.
+
+`useDebugState` exposes explicitly selected values. Pathname changes clear the previous page's context and trigger state hooks to register the still-mounted component's current values. The independent [Next.js example](../examples/next-app) verifies this using a counter retained across two routes. The public setup form imports the SDK from the actual release archive.
+
+The low-level opt-in interfaces below remain available. Replay is a separate integration and is not installed by the Next.js component.
+
 ## Deterministic replay
 
 ```mermaid
