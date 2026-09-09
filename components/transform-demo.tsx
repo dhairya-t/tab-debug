@@ -7,7 +7,7 @@ import {
   ArrowUpRight,
   Check,
   Loader2,
-  Play,
+  Pause,
   Upload,
   X,
 } from 'lucide-react';
@@ -24,12 +24,16 @@ const evidence =
 const source =
   'https://github.com/ritz078/transform/blob/ff7557939be351706f4dc6f71cc375e3bc64c225/components/EditorPanel.tsx#L157';
 type FileName = 'staging.json' | 'production.json';
+type Step = 'idle' | 'staging' | 'submitted' | 'production' | 'done';
+type Delivery = { wait: Promise<void>; release: () => void };
 type Run = {
   controller: AbortController;
   guarded: boolean;
   latest: number;
   pending: number;
   completed: number;
+  deliveries?: Record<FileName, Delivery>;
+  tasks: Partial<Record<FileName, Promise<void>>>;
 };
 type Download = {
   id: number;
@@ -38,6 +42,7 @@ type Download = {
   ignored?: boolean;
   failed?: boolean;
   arrived?: number;
+  ready?: boolean;
 };
 type EditorState = {
   selectedFile: FileName | null;
@@ -60,17 +65,18 @@ type ToolOutput = {
 };
 type Evidence = { state: ToolOutput; requests: ToolOutput; transport: string };
 const filePath = (file: FileName) => `/api/transform-file/${file}`;
-const pause = (ms: number, signal: AbortSignal) =>
-  new Promise<void>((resolve) => {
-    const finish = () => {
-      clearTimeout(timer);
-      signal.removeEventListener('abort', finish);
+function holdDelivery(signal: AbortSignal): Delivery {
+  let release!: () => void;
+  const wait = new Promise<void>((resolve) => {
+    release = () => {
+      signal.removeEventListener('abort', release);
       resolve();
     };
-    const timer = setTimeout(finish, ms);
-    signal.addEventListener('abort', finish, { once: true });
-    if (signal.aborted) finish();
+    signal.addEventListener('abort', release, { once: true });
+    if (signal.aborted) release();
   });
+  return { wait, release };
+}
 
 function CodeView({ text, label }: { text: string; label: string }) {
   return (
@@ -119,6 +125,8 @@ function FileLoader() {
   const [selected, setSelected] = useState<FileName | null>(null);
   const [pending, setPending] = useState(0);
   const [guided, setGuided] = useState(false);
+  const [step, setStep] = useState<Step>('idle');
+  const [advancing, setAdvancing] = useState(false);
   const [fixed, setFixed] = useState(false);
   const [error, setError] = useState('');
   const [downloads, setDownloads] = useState<Download[]>([]);
@@ -131,6 +139,7 @@ function FileLoader() {
   const [readError, setReadError] = useState('');
   const run = useRef<Run | null>(null);
   const walking = useRef(false);
+  const stepping = useRef(false);
   const popoverRef = useRef<HTMLDivElement>(null);
   const loadButton = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -153,6 +162,13 @@ function FileLoader() {
     loading: busy,
     implementation: fixed ? 'fixed' : 'original',
     discardedOlderResponse: discarded,
+    responseDelivery: run.current?.deliveries
+      ? 'Paused between walkthrough steps'
+      : 'Live',
+    appliedFiles: downloads
+      .filter((download) => download.status && !download.ignored)
+      .sort((a, b) => a.arrived! - b.arrived!)
+      .map((download) => download.file),
   });
   useEffect(
     () => () => {
@@ -193,6 +209,7 @@ function FileLoader() {
       latest: 0,
       pending: 0,
       completed: 0,
+      tasks: {},
     };
     run.current = next;
     setValue('');
@@ -230,6 +247,16 @@ function FileLoader() {
       const nextValue = await res.text();
       JSON.parse(nextValue);
       if (run.current !== current || current.controller.signal.aborted) return;
+      // Only the walkthrough holds delivery to this callback. HTTP capture
+      // stays untouched: inspect_requests reports the actual network timings.
+      // Manual Fetch URL loads always apply responses as soon as they finish.
+      if (current.deliveries) {
+        setDownloads((previous) =>
+          previous.map((d) => (d.id === id ? { ...d, ready: true } : d)),
+        );
+        await current.deliveries[file].wait;
+      }
+      if (run.current !== current || current.controller.signal.aborted) return;
       const ignored = current.guarded && id !== current.latest;
       const arrived = ++current.completed;
       setDownloads((previous) =>
@@ -242,6 +269,7 @@ function FileLoader() {
         debug?.record('discard', 'Older download ignored', { file });
         return;
       }
+      debug?.record('action', 'Response applied to editor', { file });
       setValue(nextValue);
       if (!walking.current) setPopover(false);
     } catch (cause) {
@@ -262,30 +290,49 @@ function FileLoader() {
     }
   }
 
-  async function walkthrough(guarded: boolean) {
+  function walkthrough(guarded: boolean) {
     if (walking.current || pending || reading || !debug) return;
     walking.current = true;
     const current = reset(guarded);
+    current.deliveries = {
+      'staging.json': holdDelivery(current.controller.signal),
+      'production.json': holdDelivery(current.controller.signal),
+    };
     setGuided(true);
+    setStep('staging');
     setPopover(true);
-    try {
-      await pause(350, current.controller.signal);
-      const first = load('staging.json', current);
-      await pause(850, current.controller.signal);
-      if (current.controller.signal.aborted) return;
+    current.tasks['staging.json'] = load('staging.json', current);
+  }
+
+  async function nextStep() {
+    const current = run.current;
+    if (!current?.deliveries || stepping.current) return;
+    if (step === 'staging') {
+      if (current.latest !== 1) return;
       setUrl(filePath('production.json'));
-      setSubmissionCue(null);
-      await pause(700, current.controller.signal);
-      const second = load('production.json', current);
-      await pause(700, current.controller.signal);
-      if (run.current === current) setPopover(false);
-      await Promise.allSettled([first, second]);
-    } finally {
-      walking.current = false;
-      if (run.current === current) {
+      current.tasks['production.json'] = load('production.json', current);
+      setStep('submitted');
+      return;
+    }
+    if (step !== 'submitted' && step !== 'production') return;
+    stepping.current = true;
+    setAdvancing(true);
+    setPopover(false);
+    const file = step === 'submitted' ? 'production.json' : 'staging.json';
+    try {
+      current.deliveries[file].release();
+      await current.tasks[file];
+      if (run.current !== current || current.controller.signal.aborted) return;
+      if (step === 'submitted') {
+        setStep('production');
+      } else {
+        walking.current = false;
         setGuided(false);
-        setPopover(false);
+        setStep('done');
       }
+    } finally {
+      stepping.current = false;
+      if (run.current === current) setAdvancing(false);
     }
   }
 
@@ -309,6 +356,9 @@ function FileLoader() {
     }
     setError('');
     const current = run.current || reset(false);
+    // A visitor returning to the real form leaves the paused walkthrough.
+    current.deliveries = undefined;
+    setStep('idle');
     void load(file, current);
   }
 
@@ -369,20 +419,24 @@ function FileLoader() {
   );
   const status =
     error ||
-    (pending > 0
-      ? displayed === 'production.json' && stagingPending
-        ? 'production.json is ready. Both panes show production. The staging request is still running…'
-        : selected === 'production.json'
-          ? stagingPending
-            ? 'Submitted production.json while staging.json is still downloading.'
-            : 'Submitted production.json. Waiting for its response.'
-          : 'Submitted staging.json. The staging URL is slow; it’s still downloading.'
-      : guided
-        ? selected
-          ? 'Submitted requests have finished.'
-          : 'Entering the first URL. No request has been submitted yet.'
+    (guided
+      ? advancing
+        ? 'Waiting for the sample download to finish…'
+        : step === 'staging'
+          ? '1 of 4 — You submitted staging.json with Fetch URL. Its response is held. The editor is still empty.'
+          : step === 'submitted'
+            ? '2 of 4 — You submitted production.json with Fetch URL too. It is now your latest choice. Neither response has reached the editor yet.'
+            : '3 of 4 — Production is in both panes. This is the right result. Pause here; the older staging response will only be delivered when you click the next button.'
+      : pending > 0
+        ? displayed === 'production.json' && stagingPending
+          ? 'production.json is ready. Both panes show production. The staging request is still running…'
+          : selected === 'production.json'
+            ? stagingPending
+              ? 'Submitted production.json while staging.json is still downloading.'
+              : 'Submitted production.json. Waiting for its response.'
+            : 'Submitted staging.json. The staging URL is slow; it’s still downloading.'
         : wrong
-          ? `You last submitted ${selected}. The editor is showing ${displayed}. The earlier request finished later and replaced both panes.`
+          ? `You last submitted ${selected}. The editor is showing ${displayed}. The older response replaced both panes.`
           : finished && discarded
             ? 'production.json stays in both panes. The older download was ignored.'
             : displayed
@@ -395,21 +449,27 @@ function FileLoader() {
         <div className="tf-run-actions">
           <button
             className="tf-primary"
-            onClick={() => walkthrough(false)}
-            disabled={busy || reading || !debug}
+            onClick={() => (guided ? nextStep() : walkthrough(false))}
+            disabled={advancing || (!guided && busy) || reading || !debug}
           >
-            {busy && !fixed ? (
+            {advancing ? (
               <Loader2 size={15} className="tf-spin" />
             ) : (
-              <Play size={14} />
+              <ArrowRight size={14} />
             )}
-            {busy && !fixed
-              ? 'Playing…'
-              : downloads.length
-                ? 'Watch again'
-                : 'Watch the bug'}
+            {advancing
+              ? 'Loading response…'
+              : guided
+                ? step === 'staging'
+                  ? '2. Submit production.json'
+                  : step === 'submitted'
+                    ? '3. Show production response'
+                    : '4. Show staging response'
+                : downloads.length
+                  ? 'Start again'
+                  : '1. Submit staging.json'}
           </button>
-          {downloads.length > 0 && (
+          {downloads.length > 0 && !guided && (
             <button
               className="tf-fix-button"
               onClick={() => walkthrough(true)}
@@ -424,11 +484,13 @@ function FileLoader() {
             </button>
           )}
         </div>
-        <span>
-          {fixed ? 'Patched loader' : 'Original loader'} · Two real HTTP
-          requests
-        </span>
+        <span>{fixed ? 'Patched loader' : 'Original loader'}</span>
       </div>
+      <p className="tf-pacing-note">
+        <Pause size={13} aria-hidden="true" />
+        Four clicks, at your pace. Real downloads; delivery to the editor pauses
+        between steps.
+      </p>
       <section
         className={`tf-window ${wrong ? 'tf-has-bug' : ''}`}
         aria-label="Transform file loading demo"
@@ -574,6 +636,8 @@ function FileLoader() {
                   <X size={14} />
                 ) : download.status ? (
                   <Check size={14} />
+                ) : guided && download.ready ? (
+                  <Pause size={14} />
                 ) : (
                   <Loader2 size={14} className="tf-spin" />
                 )}
@@ -585,17 +649,20 @@ function FileLoader() {
                     {download.failed
                       ? 'Failed'
                       : download.ignored
-                        ? `Arrived ${download.arrived === 1 ? 'first' : 'second'} · ignored by the fix`
+                        ? 'Older response ignored by the fix'
                         : download.status
-                          ? `Arrived ${download.arrived === 1 ? 'first' : download.arrived === 2 ? 'second' : '#' + download.arrived}`
-                          : 'Submitted · still downloading'}
+                          ? `Applied ${download.arrived === 1 ? 'first' : download.arrived === 2 ? 'second' : '#' + download.arrived}`
+                          : guided && download.ready
+                            ? 'Downloaded · held for your next click'
+                            : 'Submitted · still downloading'}
                   </span>
                 </div>
               </div>
             ))
           ) : (
             <span className="tf-download-placeholder">
-              The two submissions and their arrival order will appear here.
+              The two submissions and their updates to the editor will appear
+              here.
             </span>
           )}
         </div>
@@ -639,7 +706,7 @@ function FileLoader() {
             <div className="td-readout-grid">
               <div className="td-request-list">
                 <span className="td-readout-label">
-                  Responses, in completion order
+                  HTTP responses (actual network timing)
                 </span>
                 {responses.map((response) => (
                   <div key={response.seq}>
@@ -691,7 +758,7 @@ function FileLoader() {
             </div>
             <p className="td-finding">
               {observed?.selectedFile !== observed?.displayedFile
-                ? 'The older response finished last and replaced the file you wanted. Your agent can now investigate the loader with this evidence.'
+                ? 'The older response replaced the file you wanted. Your agent can now investigate the loader with this evidence.'
                 : observed?.discardedOlderResponse
                   ? 'The same responses arrived, but the loader ignored the older one. The editor still matches your last choice.'
                   : 'The editor matches the last URL submitted.'}
@@ -768,9 +835,12 @@ export default function TransformDemo() {
             <p>
               I reproduced the overlapping URL loads in{' '}
               <a href={source}>Transform’s original code</a>. This smaller
-              version uses two sample files and delays the first response by
-              five seconds. The staging/production example illustrates how
-              someone could encounter it.
+              version uses two sample files. In the walkthrough, real downloads
+              are held before the loader updates the editor; your clicks release
+              production first, then staging. Network timings in the tools
+              remain unchanged. Use Load File to try it without pauses: staging
+              takes five seconds, production is fast. The staging/production
+              example illustrates how someone could encounter it.
             </p>
             <a href={evidence}>Full app verification and source ↗</a>
           </details>

@@ -42,7 +42,7 @@ function call(name, input = {}) {
 }
 try {
   run(['open', base]);
-  run(['wait', '--text', 'Watch the bug']);
+  run(['wait', '--text', '1. Submit staging.json']);
   const tools = run(['webmcp', 'list']).data.tools;
   assert.equal(tools.length, 5);
   assert.ok(
@@ -51,7 +51,15 @@ try {
     ),
   );
   const before = call('get_page_context');
-  run(['find', 'role', 'button', 'click', '--name', 'Watch the bug']);
+  run(['find', 'role', 'button', 'click', '--name', '1. Submit staging.json']);
+  for (const name of [
+    '2. Submit production.json',
+    '3. Show production response',
+    '4. Show staging response',
+  ]) {
+    run(['wait', '--text', name]);
+    run(['find', 'role', 'button', 'click', '--name', name]);
+  }
   run(['wait', '--text', 'The editor is showing staging.json.']);
   const context = call('get_page_context');
   assert.equal(context.latestError, null);
@@ -82,13 +90,21 @@ try {
   }
   assert.equal(call('get_page_context').eventCount, version);
   run(['find', 'role', 'button', 'click', '--name', 'Run with the fix']);
+  for (const name of [
+    '2. Submit production.json',
+    '3. Show production response',
+    '4. Show staging response',
+  ]) {
+    run(['wait', '--text', name]);
+    run(['find', 'role', 'button', 'click', '--name', name]);
+  }
   run(['wait', '--text', 'The older download was ignored.']);
   assert.equal(
     call('inspect_state').state.FileLoader.displayedFile,
     'production.json',
   );
   run(['open', base], true);
-  run(['wait', '--text', 'Watch the bug'], true);
+  run(['wait', '--text', '1. Submit staging.json'], true);
   const other = run(
     ['webmcp', 'invoke', 'get_page_context', '--params', '{}'],
     true,

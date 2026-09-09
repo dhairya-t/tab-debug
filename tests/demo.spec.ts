@@ -16,7 +16,7 @@ test('only the file-loading and search demos are offered; old demo URLs lead to 
     .getByRole('link', { name: '← Back to the Transform demo', exact: true })
     .click();
   await expect(
-    page.getByRole('button', { name: 'Watch the bug', exact: true }),
+    page.getByRole('button', { name: '1. Submit staging.json', exact: true }),
   ).toBeVisible();
   await page.goto('/examples');
   await expect(page).toHaveURL(/\/replay$/);

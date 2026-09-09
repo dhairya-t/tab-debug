@@ -89,7 +89,18 @@
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 0 0 16px;
+  padding: 0 0 9px;
+}
+.tf-pacing-note {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  margin: 0 0 15px;
+  color: #626b62;
+  font-size: 13px;
+}
+.tf-pacing-note svg {
+  flex-shrink: 0;
 }
 .tf-run-actions {
   display: flex;
