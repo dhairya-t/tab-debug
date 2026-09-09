@@ -1,95 +1,197 @@
-import { test, expect } from '@playwright/test';
+import { test, expect as baseExpect, type Page } from '@playwright/test';
+const expect = baseExpect.configure({ timeout: 10_000 });
 
-test('real HTTP response order produces a stale editor; the fix preserves the selection', async ({
+async function readEvidence(page: Page) {
+  await page
+    .getByRole('button', { name: 'Read debugging data', exact: true })
+    .click();
+  await expect(page.getByTestId('debug-evidence')).toBeVisible();
+  await expect(
+    page.getByText('Read through native WebMCP', { exact: true }),
+  ).toBeVisible();
+  return JSON.parse((await page.getByTestId('tool-result').textContent())!);
+}
+
+test('a corrected URL briefly renders the right JSON and YAML, then the older response replaces both; the fix preserves the choice', async ({
   page,
 }) => {
   await page.goto('/');
   await page
-    .getByRole('button', { name: 'Reproduce bug', exact: true })
+    .getByRole('button', { name: 'Watch the bug', exact: true })
     .click();
-  await expect(page.getByRole('status')).toHaveText(
-    'The older file replaced your selection.',
+  await expect(page.getByRole('status')).toContainText(
+    'production.json is ready',
   );
-  await expect(page.getByTestId('selected-file')).toHaveText('second.json');
-  await expect(page.getByTestId('displayed-file')).toHaveText('first.json');
-  await expect(page.getByTestId('response-order')).toHaveText(
-    'second.json → first.json',
+  await expect(page.getByLabel('YAML output')).toContainText('"production"');
+  await expect(page.getByRole('status')).toContainText(
+    'The editor is showing staging.json',
   );
-  await page.getByRole('button', { name: 'Read state', exact: true }).click();
-  const state = JSON.parse(await page.getByTestId('tool-result').innerText())
-    .state.FileLoader;
-  expect(state.selectedFile).toBe('second.json');
-  expect(state.displayedFile).toBe('first.json');
-  await expect(
-    page.getByText('Read through native WebMCP', { exact: true }),
-  ).toBeVisible();
+  await expect(page.getByLabel('JSON input')).toContainText('staging.json');
+  await expect(page.getByLabel('YAML output')).toContainText('"staging"');
+  const original = await readEvidence(page);
+  expect(original.inspect_state.state.FileLoader.selectedFile).toBe(
+    'production.json',
+  );
+  expect(original.inspect_state.state.FileLoader.displayedFile).toBe(
+    'staging.json',
+  );
+  expect(
+    original.inspect_requests.events
+      .filter((e: { kind: string }) => e.kind === 'response')
+      .map((e: { label: string; data: { status: number } }) => [
+        e.label,
+        e.data.status,
+      ]),
+  ).toEqual([
+    ['200 /api/transform-file/production.json', 200],
+    ['200 /api/transform-file/staging.json', 200],
+  ]);
   await page
-    .getByRole('button', { name: 'Read requests', exact: true })
+    .getByRole('button', { name: 'Run with the fix', exact: true })
     .click();
-  await expect(page.getByTestId('tool-result')).toContainText('"events"');
-  const requests = JSON.parse(
-    await page.getByTestId('tool-result').innerText(),
+  await expect(page.getByRole('status')).toContainText(
+    'The older download was ignored',
   );
-  expect(
-    requests.events.filter(
-      (event: { kind: string; data: { status?: number } }) =>
-        event.kind === 'response' && event.data.status === 200,
-    ),
-  ).toHaveLength(2);
-  await page.getByRole('button', { name: 'Run with fix', exact: true }).click();
-  await expect(page.getByRole('status')).toHaveText(
-    'The older response was ignored. Your selection stays.',
+  await expect(page.getByLabel('JSON input')).toContainText('production.json');
+  await expect(page.getByLabel('YAML output')).toContainText('"production"');
+  const fixed = await readEvidence(page);
+  expect(fixed.inspect_state.state.FileLoader.discardedOlderResponse).toBe(
+    true,
   );
-  await expect(page.getByTestId('displayed-file')).toHaveText('second.json');
-  await page.getByRole('button', { name: 'Read state', exact: true }).click();
-  expect(
-    JSON.parse(await page.getByTestId('tool-result').innerText()).state
-      .FileLoader.discardedOlderResponse,
-  ).toBe(true);
+  expect(fixed.inspect_state.state.FileLoader.displayedFile).toBe(
+    'production.json',
+  );
 });
 
-test('a request failure is visible and the demo can be run again', async ({
+test('the actual Load File controls reproduce the race without the walkthrough', async ({
   page,
 }) => {
-  await page.route('**/api/transform-file/first.json', (route) =>
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Load File', exact: true }).click();
+  await page.getByRole('button', { name: 'Fetch URL', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText(
+    'The staging URL is slow',
+  );
+  await page
+    .getByRole('button', { name: 'production.json fast', exact: true })
+    .click();
+  await page.getByRole('button', { name: 'Fetch URL', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText(
+    'production.json is ready',
+  );
+  await expect(page.getByRole('status')).toContainText(
+    'The editor is showing staging.json',
+  );
+  const result = await readEvidence(page);
+  expect(result.inspect_state.state.FileLoader.implementation).toBe('original');
+  expect(result.inspect_state.state.FileLoader.selectedFile).toBe(
+    'production.json',
+  );
+});
+
+test('a fast first request leaves the correct result, so the bug outcome is not scripted', async ({
+  page,
+}) => {
+  await page.route('**/api/transform-file/staging.json', (route) =>
+    route.fulfill({ json: { file: 'staging.json', environment: 'staging' } }),
+  );
+  await page.goto('/');
+  await page
+    .getByRole('button', { name: 'Watch the bug', exact: true })
+    .click();
+  await expect(page.getByRole('status')).toHaveText(
+    'production.json is in the editor.',
+  );
+  await expect(page.getByLabel('YAML output')).toContainText('"production"');
+  const result = await readEvidence(page);
+  expect(result.inspect_state.state.FileLoader.selectedFile).toBe(
+    result.inspect_state.state.FileLoader.displayedFile,
+  );
+});
+
+test('a failed download stays visible, and retrying starts a clean run', async ({
+  page,
+}) => {
+  await page.route('**/api/transform-file/staging.json', (route) =>
     route.fulfill({ status: 503, body: 'Unavailable' }),
   );
   await page.goto('/');
   await page
-    .getByRole('button', { name: 'Reproduce bug', exact: true })
+    .getByRole('button', { name: 'Watch the bug', exact: true })
     .click();
-  await expect(page.getByRole('status')).toHaveText(
+  await expect(
+    page.getByRole('button', { name: 'Watch again', exact: true }),
+  ).toBeEnabled();
+  await expect(page.getByRole('status')).toContainText(
     'File request failed (503)',
   );
-  await page.unroute('**/api/transform-file/first.json');
-  await page.getByRole('button', { name: 'Run with fix', exact: true }).click();
-  await expect(page.getByTestId('displayed-file')).toHaveText('second.json');
-  await expect(page.getByRole('status')).toHaveText(
-    'The older response was ignored. Your selection stays.',
+  const result = await readEvidence(page);
+  expect(
+    result.inspect_requests.events.some(
+      (e: { data: { status?: number } }) => e.data.status === 503,
+    ),
+  ).toBe(true);
+  await expect(page.getByTestId('debug-evidence')).toContainText('503 failed');
+  await page.unroute('**/api/transform-file/staging.json');
+  await page
+    .getByRole('button', { name: 'Run with the fix', exact: true })
+    .click();
+  await expect(page.getByRole('status')).toContainText(
+    'The older download was ignored',
   );
 });
 
-test('landing page and favicon work on a narrow screen', async ({
+test('file loading validates sample URLs and supports keyboard dismissal', async ({
+  page,
+}) => {
+  await page.goto('/');
+  await expect(
+    page.getByRole('button', { name: 'Read debugging data' }),
+  ).toBeDisabled();
+  await page.getByRole('button', { name: 'Load File', exact: true }).click();
+  await expect(page.getByLabel('File URL', { exact: true })).toBeFocused();
+  await page
+    .getByLabel('File URL', { exact: true })
+    .fill('https://example.com/private.json');
+  await page.getByRole('button', { name: 'Fetch URL', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText(
+    'only the two sample URLs',
+  );
+  await page.getByLabel('File URL', { exact: true }).fill('http://[');
+  await page.getByRole('button', { name: 'Fetch URL', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText(
+    'Choose one of the two sample URLs',
+  );
+  await page.keyboard.press('Escape');
+  await expect(page.getByLabel('File URL', { exact: true })).not.toBeVisible();
+  await expect(
+    page.getByRole('button', { name: 'Load File', exact: true }),
+  ).toBeFocused();
+});
+
+test('the walkthrough, evidence, and file loader work on a phone without overflow', async ({
   page,
   request,
 }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText(
-    'Debug the page your agent is testing.',
+  await page
+    .getByRole('button', { name: 'Watch the bug', exact: true })
+    .click();
+  await expect(page.getByRole('status')).toContainText(
+    'The editor is showing staging.json',
   );
-  await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
-    'href',
-    '/favicon.svg',
-  );
-  expect(
-    (await request.get('/favicon.svg')).headers()['content-type'],
-  ).toContain('image/svg+xml');
+  await readEvidence(page);
+  await page.getByRole('button', { name: 'Load File', exact: true }).click();
+  await expect(page.getByLabel('File URL', { exact: true })).toBeVisible();
   expect(
     await page.evaluate(
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+  expect(
+    (await request.get('/favicon.svg')).headers()['content-type'],
+  ).toContain('image/svg+xml');
   await page.screenshot({
     path: 'test-results/transform-mobile.png',
     fullPage: true,
