@@ -44,6 +44,12 @@ try {
   await expect(page.getByTestId('debug-evidence')).toContainText(
     'production.json',
   );
+  await page
+    .locator('.tf-window')
+    .evaluate((element) =>
+      element.scrollIntoView({ block: 'start', behavior: 'smooth' }),
+    );
+  await page.waitForTimeout(500);
   await page.screenshot({ path: 'docs/media/transform-demo.png' });
   await page.waitForTimeout(3000);
   await page
@@ -59,6 +65,11 @@ try {
   await expect(page.getByTestId('debug-evidence')).toContainText(
     'The editor still matches your last choice',
   );
+  await page
+    .locator('.tf-window')
+    .evaluate((element) =>
+      element.scrollIntoView({ block: 'start', behavior: 'smooth' }),
+    );
   await page.waitForTimeout(3000);
   const video = page.video();
   await context.close();
