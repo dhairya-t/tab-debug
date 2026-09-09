@@ -733,10 +733,29 @@
   color: #375d79;
   margin: 10px 0 0;
 }
-.tf-url-input button[data-submitted='true'] {
+.tf-window button:disabled,
+.tf-window input:disabled {
+  cursor: not-allowed;
+}
+.tf-url-input button:disabled {
+  color: #78848c;
+  background: #e5eaed;
+  border-color: #cbd4da;
+  box-shadow: none;
   opacity: 1;
-  background: #084e84;
-  box-shadow: 0 0 0 3px #b3d9f4;
+}
+.tf-url-input input:disabled {
+  color: #7b858c;
+  background: #f0f3f5;
+}
+.tf-sample-urls button:disabled,
+.tf-popover-heading button:disabled {
+  color: #9aa3a9;
+}
+.tf-editor-toolbar button:disabled {
+  color: #9aa3a9;
+  background: #f0f3f5;
+  border-color: #e0e5e9;
 }
 .tf-download-description {
   display: flex;

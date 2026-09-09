@@ -24,6 +24,79 @@ async function readEvidence(page: Page) {
   return JSON.parse((await page.getByTestId('tool-result').textContent())!);
 }
 
+test('debugging data uses the object-input WebMCP contract and does not retry tool failures', async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    type Tool = { name: string; execute: (input: object) => unknown };
+    const registered = new Map<string, Tool>();
+    const probe = { calls: [] as string[], fail: false };
+    Object.assign(window, { webmcpProbe: probe });
+    Object.defineProperty(document, 'modelContext', {
+      value: {
+        registerTool(tool: Tool, { signal }: { signal: AbortSignal }) {
+          registered.set(tool.name, tool);
+          signal.addEventListener('abort', () => registered.delete(tool.name), {
+            once: true,
+          });
+        },
+        async getTools() {
+          return [...registered.values()].map(({ name }) => ({ name }));
+        },
+        async executeTool(tool: { name: string }, input: object) {
+          probe.calls.push(typeof input);
+          if (!input || typeof input !== 'object')
+            throw new TypeError('WebMCP executeTool requires an object input.');
+          if (probe.fail)
+            throw new Error('Tool unavailable. Please try again.');
+          // The in-app browser serializes the callback's JSON string once more.
+          return JSON.stringify(registered.get(tool.name)!.execute(input));
+        },
+      },
+    });
+  });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Load File', exact: true }).click();
+  await page
+    .getByRole('button', { name: 'production.json fast', exact: true })
+    .click();
+  await page.getByRole('button', { name: 'Fetch URL', exact: true }).click();
+  await expect(page.getByTestId('displayed-file')).toHaveText(
+    'production.json',
+  );
+  const evidence = await readEvidence(page);
+  expect(evidence.inspect_state.state.FileLoader.displayedFile).toBe(
+    'production.json',
+  );
+  expect(
+    evidence.inspect_requests.events.some(
+      (event: { data: { status?: number } }) => event.data.status === 200,
+    ),
+  ).toBe(true);
+  expect(
+    await page.evaluate(() => {
+      const probe = (
+        window as unknown as { webmcpProbe: { calls: string[]; fail: boolean } }
+      ).webmcpProbe;
+      probe.fail = true;
+      return probe.calls;
+    }),
+  ).toEqual(['object', 'object']);
+  await page
+    .getByRole('button', { name: 'Read debugging data', exact: true })
+    .click();
+  await expect(
+    page.getByLabel('What tab-debug adds').getByRole('alert'),
+  ).toHaveText('Tool unavailable. Please try again.');
+  expect(
+    await page.evaluate(
+      () =>
+        (window as unknown as { webmcpProbe: { calls: string[] } }).webmcpProbe
+          .calls,
+    ),
+  ).toEqual(['object', 'object', 'object', 'object']);
+});
+
 test('each walkthrough step waits for the visitor, including before the older response replaces production; the fix preserves the choice', async ({
   page,
 }) => {
@@ -31,6 +104,16 @@ test('each walkthrough step waits for the visitor, including before the older re
   await page
     .getByRole('button', { name: '1. Submit staging.json', exact: true })
     .click();
+  const fetchButton = page.getByRole('button', {
+    name: 'Fetch URL',
+    exact: true,
+  });
+  await expect(fetchButton).toBeDisabled();
+  await expect(fetchButton).toHaveCSS('cursor', 'not-allowed');
+  await expect(fetchButton).toHaveCSS('box-shadow', 'none');
+  await expect(page.locator('.tf-submission-note')).toContainText(
+    'Use the numbered button above',
+  );
   // The real five-second staging download can finish without advancing the UI.
   await expect(page.getByLabel('Downloads', { exact: true })).toContainText(
     'Downloaded · held for your next click',

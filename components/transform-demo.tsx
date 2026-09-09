@@ -374,7 +374,7 @@ function FileLoader() {
           getTools?: () => Promise<{ name: string }[]>;
           executeTool?: (
             tool: { name: string },
-            input: string,
+            input: Record<string, never> | string,
           ) => Promise<string>;
         };
       }
@@ -386,16 +386,38 @@ function FileLoader() {
         !!context?.executeTool &&
         names.every((name) => tools.some((tool) => tool.name === name));
       const results = await Promise.all(
-        names.map(async (name) =>
-          native
-            ? (JSON.parse(
-                await context!.executeTool!(
-                  tools.find((tool) => tool.name === name)!,
-                  '{}',
-                ),
-              ) as ToolOutput)
-            : (debug.callTool(name, {}) as ToolOutput),
-        ),
+        names.map(async (name) => {
+          if (!native) return debug.callTool(name, {}) as ToolOutput;
+          const tool = tools.find((tool) => tool.name === name)!;
+          let output: string;
+          try {
+            output = await context!.executeTool!(tool, {});
+          } catch (cause) {
+            // Older experimental Chrome builds accept serialized arguments.
+            // Retry only a parsing rejection, before either read-only tool ran.
+            if (
+              !(cause instanceof Error) ||
+              cause.message !== 'Failed to parse input arguments'
+            )
+              throw cause;
+            output = await context!.executeTool!(tool, '{}');
+          }
+          // Some browsers serialize the tool's JSON-string return value again.
+          const decoded: unknown = JSON.parse(output);
+          const result = (
+            typeof decoded === 'string' ? JSON.parse(decoded) : decoded
+          ) as ToolOutput | null;
+          if (
+            !result ||
+            (name === 'inspect_state'
+              ? !result.state?.FileLoader
+              : !Array.isArray(result.events))
+          )
+            throw new Error(
+              'The browser returned unreadable debugging data. Please try again.',
+            );
+          return result;
+        }),
       );
       if (run.current !== current) return;
       setData({
@@ -576,20 +598,16 @@ function FileLoader() {
                       }}
                       disabled={guided || reading}
                     />
-                    <button
-                      type="submit"
-                      disabled={guided || reading}
-                      data-submitted={guided && !!submissionCue}
-                    >
+                    <button type="submit" disabled={guided || reading}>
                       Fetch URL
                     </button>
                   </div>
                 </form>
                 <p className="tf-submission-note" aria-live="polite">
-                  {submissionCue
-                    ? `Fetch URL → ${submissionCue} submitted.`
-                    : guided
-                      ? 'Entering the URL. It has not been submitted yet.'
+                  {guided
+                    ? `${submissionCue} submitted. Use the numbered button above to continue.`
+                    : submissionCue
+                      ? `Fetch URL → ${submissionCue} submitted.`
                       : 'URL entered. Click Fetch URL to submit it.'}
                 </p>
                 <div className="tf-sample-urls">
