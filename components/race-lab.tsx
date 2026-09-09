@@ -63,7 +63,7 @@ import './race-lab.css';
 
 type Pair = { original: ReplayResult; patched: ReplayResult };
 type ScheduleResult = { order: string[]; original: boolean; patched: boolean };
-const repo = 'https://github.com/dhairya-t/pagescope';
+const repo = 'https://github.com/dhairya-t/tab-debug';
 const pause = (ms: number) =>
   new Promise<void>((resolve) => setTimeout(resolve, ms));
 const pretty = (value: unknown) =>
@@ -98,8 +98,8 @@ function ResultView({
           <Package size={42} strokeWidth={1} />
         </div>
         <div className="parcel-name">
-          <span>FIELD EQUIPMENT / 01</span>
-          <strong>Ready for dispatch.</strong>
+          <span>Order #1042</span>
+          <strong>Shipping</strong>
         </div>
         <dl>
           <div>
@@ -130,10 +130,8 @@ function ResultView({
   return (
     <div className="atlas-preview">
       <div className="mini-atlas-head">
-        <span>
-          atlas<sup>®</sup>
-        </span>
-        <span>FIELD NOTES FROM ABOVE</span>
+        <span>Archive</span>
+        <span>Satellite images</span>
       </div>
       <div className="mini-query">
         <span>
@@ -157,7 +155,7 @@ function ResultView({
         ) : (
           <div className="lab-empty">
             {Number(state.pending)
-              ? 'Responses are held at the completion gate.'
+              ? 'Waiting for responses…'
               : 'No observations for this query.'}
           </div>
         )}
@@ -191,7 +189,7 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
   const [tool, setTool] = useState<ToolName>('get_page_context');
   const [toolResult, setToolResult] = useState<unknown>(null);
   const [variant, setVariant] = useState<Variant>('original');
-  const [origin, setOrigin] = useState('https://pagescope-omega.vercel.app');
+  const [origin, setOrigin] = useState('https://tab-debug-dhairya.vercel.app');
   const abort = useRef<AbortController | null>(null);
   const occupied = useRef(false);
   const importRef = useRef<HTMLInputElement>(null);
@@ -422,17 +420,19 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
         )
       : -1;
   const script = incident ? generatePlaywright(incident) : '';
-  const fileName = `pagescope-${app}.spec.ts`;
+  const fileName = `tab-debug-${app}.spec.ts`;
 
   return (
     <div className="replay-app">
       <header className="lab-header">
         <a href="/" className="lab-brand">
-          <Crosshair size={23} strokeWidth={1.5} />
-          PageScope<span>REPLAY LAB / 02</span>
+          <Terminal size={21} strokeWidth={1.6} />
+          tab-debug
         </a>
         <nav>
-          <a href="/examples">Diagnostics</a>
+          <a href="/setup" className="setup-link">
+            Add to your app
+          </a>
           <a href={repo} target="_blank" rel="noreferrer">
             Source <ArrowUpRight size={13} />
           </a>
@@ -443,7 +443,7 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
             </DialogTrigger>
             <DialogContent className="lab-dialog">
               <DialogHeader>
-                <DialogTitle>The evidence, in this tab.</DialogTitle>
+                <DialogTitle>Browser tools</DialogTitle>
                 <DialogDescription>
                   {native === 'native'
                     ? 'Native WebMCP is registered. These are the same tools a browser agent can call.'
@@ -468,7 +468,7 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
               <pre data-testid="lab-tool-result">
                 {toolResult
                   ? JSON.stringify(toolResult, null, 2)
-                  : 'Choose a tool to inspect actual page diagnostics.'}
+                  : 'Select a tool to see its output.'}
               </pre>
               <code>agent-browser webmcp invoke inspect_state</code>
             </DialogContent>
@@ -477,31 +477,12 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
       </header>
       <main className="lab-main" data-testid="replay-ready" data-ready={ready}>
         <section className="lab-intro">
-          <div>
-            <p className="lab-kicker">
-              FROM “CAN’T REPRODUCE” TO A FAILING TEST
-            </p>
-            <h1>
-              Catch the bug.
-              <br />
-              <em>Keep the proof.</em>
-            </h1>
-          </div>
-          <div className="intro-note">
-            <span className="note-index">01 / 03</span>
-            <p>
-              A slow response can undo a newer action. <br />
-              Capture the evidence. Control the order. <br />
-              Take home a test that catches it.
-            </p>
-            <a
-              href="https://x.com/rauchg/status/2096065378598441431"
-              target="_blank"
-              rel="noreferrer"
-            >
-              From a September 5 idea by @rauchg <ArrowUpRight size={12} />
-            </a>
-          </div>
+          <h1>{app === 'atlas' ? 'Search race' : 'Shipping quote race'}</h1>
+          <p>
+            {app === 'atlas'
+              ? 'An old response replaces the latest search results.'
+              : 'An old shipping quote replaces the price for the current address.'}
+          </p>
         </section>
 
         <div className="lab-example-tabs">
@@ -534,22 +515,14 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
         </div>
         <section className="capture-controls" aria-label="Configure recording">
           <div className="capture-label">
-            <span className="lab-kicker">THE USER’S ACTIONS</span>
-            <strong>
-              {app === 'atlas'
-                ? 'Three searches. One intent.'
-                : 'Three addresses. One quote.'}
-            </strong>
-            <span>
-              Requests start in this order <ArrowRight size={12} />
-            </span>
+            Requests <ArrowRight size={14} />
           </div>
           <div className="query-fields">
             {inputs.map((value, i) => (
               <label key={i}>
                 <span>
                   Q{i + 1}
-                  {i === inputs.length - 1 && <small>LATEST INTENT</small>}
+                  {i === inputs.length - 1 && <small>latest</small>}
                 </span>
                 {app === 'atlas' ? (
                   <input
@@ -605,8 +578,7 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
           aria-label="Control completion order"
         >
           <div>
-            <span className="lab-kicker">DELIVER RESPONSES</span>
-            <span>Reorder with the arrows. No timing guesses.</span>
+            <span className="lab-kicker">Response order</span>
           </div>
           <div className="order-controls">
             {order.map((id, i) => (
@@ -645,14 +617,14 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
         <div className="comparison-heading">
           <span>
             {incident
-              ? 'RECORDED API RESPONSES · REPLAYED LOCALLY'
-              : 'LIVE HTTP CAPTURE → DETERMINISTIC LOCAL REPLAY'}
+              ? 'Recorded responses'
+              : 'Same responses, two implementations'}
           </span>
           <span>
             {busy ||
               (incident
-                ? `${new TextEncoder().encode(JSON.stringify(incident)).length.toLocaleString()} byte incident / no backend needed for replay`
-                : 'Three real API calls. Only selected fields retained.')}
+                ? `${new TextEncoder().encode(JSON.stringify(incident)).length.toLocaleString()} bytes`
+                : '')}
           </span>
           {busy && (
             <button
@@ -683,14 +655,12 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
                     </span>
                     <div>
                       <h2>
-                        {implementation === 'original'
-                          ? 'Original implementation'
-                          : 'With a generation guard'}
+                        {implementation === 'original' ? 'Original' : 'Fixed'}
                       </h2>
                       <p>
                         {implementation === 'original'
-                          ? 'Every response can write to the UI.'
-                          : 'Only the latest request can commit.'}
+                          ? 'Applies every response.'
+                          : 'Ignores outdated responses.'}
                       </p>
                     </div>
                   </div>
@@ -710,7 +680,7 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
                         </>
                       )
                     ) : (
-                      'AWAITING RUN'
+                      'Not run'
                     )}
                   </span>
                 </header>
@@ -744,338 +714,321 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
           })}
         </section>
 
-        <section className="evidence-section">
-          <div className="section-heading">
-            <div>
-              <span className="section-index">02</span>
-              <h2>Find the moment it went wrong.</h2>
-            </div>
-            <p>Inspect recorded state at each completed handler.</p>
-          </div>
-          <div className="evidence-grid">
-            <div className="state-history">
-              <div className="history-heading">
-                <span className="lab-kicker">STATE AFTER</span>
-                <div className="frame-controls">
-                  {['intent', ...(incident?.order ?? order)].map((step, i) => (
-                    <button
-                      key={step}
-                      aria-label={`Inspect state after ${step}`}
-                      aria-pressed={cursor === i && !!pair}
-                      disabled={!pair || !!busy}
-                      onClick={() => setCursor(i)}
-                    >
-                      {step === 'intent' ? 'All inputs' : step}
-                    </button>
-                  ))}
+        {incident && (
+          <>
+            <section className="evidence-section">
+              <div className="section-heading">
+                <div>
+                  <h2>State</h2>
                 </div>
               </div>
-              {pair && original ? (
-                <>
-                  <div className="state-table">
-                    <div className="state-table-heading">
-                      <span>FIELD</span>
-                      <span>ORIGINAL</span>
-                      <span>PATCHED</span>
+              <div className="evidence-grid">
+                <div className="state-history">
+                  <div className="history-heading">
+                    <span className="lab-kicker">After</span>
+                    <div className="frame-controls">
+                      {['intent', ...(incident?.order ?? order)].map(
+                        (step, i) => (
+                          <button
+                            key={step}
+                            aria-label={`Inspect state after ${step}`}
+                            aria-pressed={cursor === i && !!pair}
+                            disabled={!pair || !!busy}
+                            onClick={() => setCursor(i)}
+                          >
+                            {step === 'intent' ? 'All inputs' : step}
+                          </button>
+                        ),
+                      )}
                     </div>
-                    {Object.keys(original.state as object)
-                      .filter((key) => key !== 'ids')
-                      .map((key) => (
-                        <div
-                          key={key}
-                          className={
-                            JSON.stringify(
-                              (original.state as Record<string, Json>)[key],
-                            ) !==
-                            JSON.stringify(
-                              (patched?.state as Record<string, Json>)?.[key],
-                            )
-                              ? 'different'
-                              : ''
-                          }
-                        >
-                          <span>{key}</span>
-                          <code>
-                            {pretty(
-                              (original.state as Record<string, Json>)[key],
-                            )}
-                          </code>
-                          <code>
-                            {pretty(
-                              (patched?.state as Record<string, Json>)?.[key],
-                            )}
-                          </code>
+                  </div>
+                  {pair && original ? (
+                    <>
+                      <div className="state-table">
+                        <div className="state-table-heading">
+                          <span>FIELD</span>
+                          <span>ORIGINAL</span>
+                          <span>PATCHED</span>
                         </div>
-                      ))}
-                  </div>
-                  <div className="causal-note">
-                    {divergence > 0 ? (
-                      <>
-                        <Crosshair size={15} />
-                        <p>
-                          <strong>
-                            {pair.original.checkpoints[divergence].step} is the
-                            first divergent commit.
-                          </strong>{' '}
-                          Its handler changed the original state while the guard
-                          rejected the stale response.
-                        </p>
-                        <button onClick={() => setCursor(divergence)}>
-                          Jump to it <ArrowRight size={12} />
-                        </button>
-                      </>
-                    ) : (
-                      <>
-                        <Check size={15} />
-                        <p>
-                          This completion order left both implementations
-                          consistent. Try delivering the latest request first.
-                        </p>
-                      </>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="evidence-empty">
-                  <Crosshair size={25} strokeWidth={1} />
-                  <p>
-                    A screenshot shows the symptom.
-                    <br />
-                    <strong>The state transition explains it.</strong>
-                  </p>
-                </div>
-              )}
-            </div>
-            <div className="transport-panel">
-              <span className="lab-kicker">ACTUAL TRANSPORT</span>
-              <p>
-                Network time is measured separately from application delivery
-                order.
-              </p>
-              <div className="transport-rows">
-                {(
-                  incident?.operations ??
-                  order.map((_, i) => ({
-                    id: `Q${i + 1}`,
-                    label: inputs[i],
-                    transportMs: 0,
-                  }))
-                ).map((op) => (
-                  <div className="transport-row" key={op.id}>
-                    <span>{op.id}</span>
-                    <div>
-                      <div>
-                        <span>{op.label}</span>
-                        <code>
-                          {incident ? `${op.transportMs}ms` : 'Not captured'}
-                        </code>
+                        {Object.keys(original.state as object)
+                          .filter((key) => key !== 'ids')
+                          .map((key) => (
+                            <div
+                              key={key}
+                              className={
+                                JSON.stringify(
+                                  (original.state as Record<string, Json>)[key],
+                                ) !==
+                                JSON.stringify(
+                                  (patched?.state as Record<string, Json>)?.[
+                                    key
+                                  ],
+                                )
+                                  ? 'different'
+                                  : ''
+                              }
+                            >
+                              <span>{key}</span>
+                              <code>
+                                {pretty(
+                                  (original.state as Record<string, Json>)[key],
+                                )}
+                              </code>
+                              <code>
+                                {pretty(
+                                  (patched?.state as Record<string, Json>)?.[
+                                    key
+                                  ],
+                                )}
+                              </code>
+                            </div>
+                          ))}
                       </div>
-                      <div className="transport-track">
-                        <i
-                          style={{
-                            width: incident
-                              ? `${Math.max(3, (op.transportMs / Math.max(...incident.operations.map((item) => item.transportMs), 1)) * 100)}%`
-                              : '0%',
-                          }}
-                        />
+                      <div className="causal-note">
+                        {divergence > 0 ? (
+                          <>
+                            <Crosshair size={15} />
+                            <p>
+                              <strong>
+                                {pair.original.checkpoints[divergence].step} is
+                                the first different state update.
+                              </strong>{' '}
+                              The fixed version ignored this outdated response.
+                            </p>
+                            <button onClick={() => setCursor(divergence)}>
+                              Jump to it <ArrowRight size={12} />
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <Check size={15} />
+                            <p>
+                              This completion order left both implementations
+                              consistent. Try delivering the latest request
+                              first.
+                            </p>
+                          </>
+                        )}
                       </div>
+                    </>
+                  ) : (
+                    <div className="evidence-empty">
+                      <p>Run the comparison to inspect state changes.</p>
                     </div>
+                  )}
+                </div>
+                <div className="transport-panel">
+                  <span className="lab-kicker">Request duration</span>
+                  <p>Measured before replay changes the response order.</p>
+                  <div className="transport-rows">
+                    {(
+                      incident?.operations ??
+                      order.map((_, i) => ({
+                        id: `Q${i + 1}`,
+                        label: inputs[i],
+                        transportMs: 0,
+                      }))
+                    ).map((op) => (
+                      <div className="transport-row" key={op.id}>
+                        <span>{op.id}</span>
+                        <div>
+                          <div>
+                            <span>{op.label}</span>
+                            <code>
+                              {incident
+                                ? `${op.transportMs}ms`
+                                : 'Not captured'}
+                            </code>
+                          </div>
+                          <div className="transport-track">
+                            <i
+                              style={{
+                                width: incident
+                                  ? `${Math.max(3, (op.transportMs / Math.max(...incident.operations.map((item) => item.transportMs), 1)) * 100)}%`
+                                  : '0%',
+                              }}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
+                  <div className="gate-note">
+                    <span>Replay order</span>
+                    <strong>{(incident?.order ?? order).join(' → ')}</strong>
+                    <p></p>
+                  </div>
+                </div>
               </div>
-              <div className="gate-note">
-                <span>COMPLETION GATE</span>
-                <strong>{(incident?.order ?? order).join(' → ')}</strong>
-                <p>
-                  Replay releases one response and awaits its application
-                  handler before the next. No sleep determines correctness.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
+            </section>
 
-        <section className="schedule-section">
-          <div className="schedule-intro">
-            <span className="lab-kicker">THE BUG IS AN ORDERING PROBLEM</span>
-            <h2>
-              Try every way <br />
-              the responses can finish.
-            </h2>
-            <p>
-              Exhaustive coverage of the recorded operations’ completion orders.
-              Both versions run the same application handlers.
-            </p>
-            <button
-              className="lab-secondary"
-              disabled={!incident || !!busy}
-              onClick={explore}
-            >
-              <RotateCcw size={13} />
-              Check all {incident
-                ? permutations(incident.order).length
-                : 6}{' '}
-              orders
-            </button>
-          </div>
-          <div className="schedule-results">
-            <div className="schedule-table-head">
-              <span>RESPONSE ORDER</span>
-              <span>ORIGINAL</span>
-              <span>GUARDED</span>
-            </div>
-            {(matrix.length
-              ? matrix
-              : permutations(['Q1', 'Q2', 'Q3']).map((sequence) => ({
-                  order: sequence,
-                  original: null,
-                  patched: null,
-                }))
-            ).map((row) => (
-              <button
-                key={row.order.join('')}
-                className="schedule-row"
-                disabled={!matrix.length || !!busy}
-                onClick={() =>
-                  incident &&
-                  operation('Replaying selected order', async () => {
-                    const recording = parseIncident({
-                      ...incident,
-                      order: row.order,
-                    });
-                    setOrder(row.order);
-                    setIncident(recording);
-                    await compare(recording);
-                  })
-                }
-              >
-                <code>{row.order.join(' → ')}</code>
-                {[row.original, row.patched].map((pass, i) => (
-                  <span
-                    key={i}
-                    className={
-                      pass === null
-                        ? ''
-                        : pass
-                          ? 'schedule-pass'
-                          : 'schedule-fail'
-                    }
-                  >
-                    {pass === null ? (
-                      '—'
-                    ) : pass ? (
-                      <>
-                        <Check size={12} />
-                        PASS
-                      </>
-                    ) : (
-                      <>
-                        <X size={12} />
-                        FAIL
-                      </>
-                    )}
-                  </span>
-                ))}
-              </button>
-            ))}
-            <div className="schedule-summary" role="status">
-              {matrix.length ? (
-                <>
-                  <strong>
-                    {matrix.filter((row) => !row.original).length}/
-                    {matrix.length} original failures →{' '}
-                    {matrix.filter((row) => !row.patched).length}/
-                    {matrix.length} guarded failures
-                  </strong>
-                  <span>
-                    {matrixMs.toFixed(1)}ms measured execution · 0 API calls
-                  </span>
-                </>
-              ) : (
-                <span>
-                  No results yet. Capture a run to explore its schedules.
-                </span>
-              )}
-            </div>
-          </div>
-        </section>
-
-        <section className="takeaway-section">
-          <div className="section-heading">
-            <div>
-              <span className="section-index">03</span>
-              <h2>A bug report you can run.</h2>
-            </div>
-            <p>
-              Open the incident on another machine. Keep the regression in CI.
-            </p>
-          </div>
-          <div className="takeaway-body">
-            <div>
-              <p>
-                The recording contains selected response fields, completion
-                order, and the state invariant. The generated test asserts the
-                actual state returned by your application’s replay adapter.
-              </p>
-              <div className="export-buttons">
-                <button
-                  className="lab-primary"
-                  disabled={!incident || !!busy}
-                  onClick={() => {
-                    if (incident)
-                      save(
-                        `pagescope-${app}.incident.json`,
-                        JSON.stringify(incident, null, 2),
-                        'application/json',
-                      );
-                  }}
-                >
-                  <Download size={14} />
-                  Save incident
-                </button>
+            <section className="schedule-section">
+              <div className="schedule-intro">
+                <h2>Other response orders</h2>
                 <button
                   className="lab-secondary"
-                  disabled={
-                    !incident || !!busy || !pair || pair.original.passed
-                  }
-                  onClick={() => save(fileName, script, 'text/plain')}
+                  disabled={!incident || !!busy}
+                  onClick={explore}
                 >
-                  <FileCode2 size={14} />
-                  Export regression test
+                  <RotateCcw size={13} />
+                  {`Check all ${incident ? permutations(incident.order).length : 6} orders`}
                 </button>
               </div>
-              <p className="export-note">
-                {pair?.original.passed
-                  ? 'Choose a failing completion order to export a test that distinguishes the two implementations.'
-                  : 'The test is supposed to fail on the original implementation. Patches are explicit source branches, never generated repairs.'}
-              </p>
-            </div>
-            <div className="test-command">
-              <div>
-                <Terminal size={14} />
-                <span>RUN THE EXPORTED TEST</span>
-                <span className="target-variant">
-                  TARGET: {variant.toUpperCase()}
-                </span>
+              <div className="schedule-results">
+                <div className="schedule-table-head">
+                  <span>RESPONSE ORDER</span>
+                  <span>ORIGINAL</span>
+                  <span>GUARDED</span>
+                </div>
+                {(matrix.length
+                  ? matrix
+                  : permutations(['Q1', 'Q2', 'Q3']).map((sequence) => ({
+                      order: sequence,
+                      original: null,
+                      patched: null,
+                    }))
+                ).map((row) => (
+                  <button
+                    key={row.order.join('')}
+                    className="schedule-row"
+                    disabled={!matrix.length || !!busy}
+                    onClick={() =>
+                      incident &&
+                      operation('Replaying selected order', async () => {
+                        const recording = parseIncident({
+                          ...incident,
+                          order: row.order,
+                        });
+                        setOrder(row.order);
+                        setIncident(recording);
+                        await compare(recording);
+                      })
+                    }
+                  >
+                    <code>{row.order.join(' → ')}</code>
+                    {[row.original, row.patched].map((pass, i) => (
+                      <span
+                        key={i}
+                        className={
+                          pass === null
+                            ? ''
+                            : pass
+                              ? 'schedule-pass'
+                              : 'schedule-fail'
+                        }
+                      >
+                        {pass === null ? (
+                          '—'
+                        ) : pass ? (
+                          <>
+                            <Check size={12} />
+                            PASS
+                          </>
+                        ) : (
+                          <>
+                            <X size={12} />
+                            FAIL
+                          </>
+                        )}
+                      </span>
+                    ))}
+                  </button>
+                ))}
+                <div className="schedule-summary" role="status">
+                  {matrix.length ? (
+                    <>
+                      <strong>
+                        {matrix.filter((row) => !row.original).length}/
+                        {matrix.length} original failures →{' '}
+                        {matrix.filter((row) => !row.patched).length}/
+                        {matrix.length} guarded failures
+                      </strong>
+                      <span>
+                        {matrixMs.toFixed(1)}ms measured execution · 0 API calls
+                      </span>
+                    </>
+                  ) : (
+                    <span>Run a comparison first.</span>
+                  )}
+                </div>
               </div>
-              <pre>
-                <span className="command-comment">
-                  # Against the original: assertion fails
-                </span>
-                {'\n'}PAGESCOPE_BASE_URL='{origin}
-                {app === 'atlas' ? '/' : '/shipping'}' \{'\n'} npx playwright
-                test {fileName}
-                {'\n\n'}
-                <span className="command-comment">
-                  # Same recording, patched application: passes
-                </span>
-                {'\n'}PAGESCOPE_BASE_URL='{origin}
-                {app === 'atlas' ? '/' : '/shipping'}?implementation=patched' \
-                {'\n'} npx playwright test {fileName}
-              </pre>
-            </div>
-          </div>
-        </section>
+            </section>
+
+            <section className="takeaway-section">
+              <div className="section-heading">
+                <div>
+                  <h2>Export</h2>
+                </div>
+                <p></p>
+              </div>
+              <div className="takeaway-body">
+                <div>
+                  <p>
+                    Save the recording to replay it elsewhere, or download a
+                    Playwright test.
+                  </p>
+                  <div className="export-buttons">
+                    <button
+                      className="lab-primary"
+                      disabled={!incident || !!busy}
+                      onClick={() => {
+                        if (incident)
+                          save(
+                            `tab-debug-${app}.incident.json`,
+                            JSON.stringify(incident, null, 2),
+                            'application/json',
+                          );
+                      }}
+                    >
+                      <Download size={14} />
+                      Save incident
+                    </button>
+                    <button
+                      className="lab-secondary"
+                      disabled={
+                        !incident || !!busy || !pair || pair.original.passed
+                      }
+                      onClick={() => save(fileName, script, 'text/plain')}
+                    >
+                      <FileCode2 size={14} />
+                      Export regression test
+                    </button>
+                  </div>
+                  <p className="export-note">
+                    {pair?.original.passed
+                      ? 'Select an order that fails to export a regression test.'
+                      : 'The test fails on the original code and passes with the prewritten fix.'}
+                  </p>
+                </div>
+                <div className="test-command">
+                  <div>
+                    <Terminal size={14} />
+                    <span>RUN THE EXPORTED TEST</span>
+                    <span className="target-variant">
+                      TARGET: {variant.toUpperCase()}
+                    </span>
+                  </div>
+                  <pre>
+                    <span className="command-comment">
+                      # Against the original: assertion fails
+                    </span>
+                    {'\n'}PAGESCOPE_BASE_URL='{origin}
+                    {app === 'atlas' ? '/' : '/shipping'}' \{'\n'} npx
+                    playwright test {fileName}
+                    {'\n\n'}
+                    <span className="command-comment">
+                      # Same recording, patched application: passes
+                    </span>
+                    {'\n'}PAGESCOPE_BASE_URL='{origin}
+                    {app === 'atlas' ? '/' : '/shipping'}
+                    ?implementation=patched' \{'\n'} npx playwright test{' '}
+                    {fileName}
+                  </pre>
+                </div>
+              </div>
+            </section>
+          </>
+        )}
         {notice && (
           <div className="lab-notice" role="alert">
             <span>{notice}</span>
@@ -1085,15 +1038,8 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
           </div>
         )}
         <div className="lab-footnote">
-          <span>
-            Local replay of explicitly captured fixtures. No account, model, or
-            telemetry backend.
-          </span>
-          <a
-            href={`${repo}/blob/main/docs/replay.md`}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <span>These examples contain deliberate bugs.</span>
+          <a href="/setup" target="_blank" rel="noreferrer">
             Integrate into your app <ArrowUpRight size={12} />
           </a>
         </div>
@@ -1103,7 +1049,9 @@ export default function RaceLab({ app = 'atlas' }: { app?: AppKind }) {
           <Crosshair size={14} />
           Built by <a href="https://github.com/dhairya-t">Dhairya Thakkar</a>
         </span>
-        <span>LESS GUESSWORK. BETTER EVIDENCE.</span>
+        <a href="https://x.com/rauchg/status/2096065378598441431">
+          Inspired by @rauchg’s WebMCP post
+        </a>
         <a href="/images/CREDITS.md">
           NASA / USGS imagery <ArrowUpRight size={11} />
         </a>

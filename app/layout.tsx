@@ -13,30 +13,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://pagescope-omega.vercel.app'),
-  title: 'PageScope — Catch the bug. Keep the proof.',
+  metadataBase: new URL('https://tab-debug-dhairya.vercel.app'),
+  title: 'tab-debug — Browser debugging tools',
   description:
-    'Turn an intermittent browser race into a repeatable failing test. Capture selected API responses, inspect state transitions, and export a Playwright regression.',
+    'Expose page state, requests, and errors to browser agents through WebMCP. Next.js integration and working examples.',
   alternates: { canonical: '/' },
   openGraph: {
     type: 'website',
     url: '/',
-    siteName: 'PageScope',
-    title: 'PageScope — Catch the bug. Keep the proof.',
+    siteName: 'tab-debug',
+    title: 'tab-debug — Browser debugging tools',
     description:
-      'Capture a race. Replay every completion order. Export a test that fails before the fix and passes after it. Built by Dhairya Thakkar.',
+      'Page-specific debugging tools for browser agents. Built by Dhairya Thakkar.',
     images: [
       {
         url: '/images/lena-delta.jpg',
-        alt: 'Lena River Delta, a NASA/USGS satellite observation in the PageScope demo.',
+        alt: 'Lena River Delta, a NASA/USGS satellite observation in the tab-debug demo.',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'PageScope — Catch the bug. Keep the proof.',
+    title: 'tab-debug — Browser debugging tools',
     description:
-      'An intermittent browser bug, turned into a portable incident and a failing regression test. Built by Dhairya Thakkar.',
+      'Page-specific debugging tools for browser agents. Built by Dhairya Thakkar.',
     images: ['/images/lena-delta.jpg'],
   },
 };

@@ -87,7 +87,7 @@ try {
   run(['open', new URL('/', base).href]);
   run(['wait', '--text', 'Capture & compare']);
   run(['find', 'role', 'button', 'click', '--name', 'Capture & compare']);
-  run(['wait', '--text', 'Q2 is the first divergent commit.']);
+  run(['wait', '--text', 'Q2 is the first different state update.']);
   const replayState = call('inspect_state').state;
   assert.equal(replayState.Incident.format, 'pagescope.incident.v1');
   assert.equal(replayState.Replay.actual, 'namibia');

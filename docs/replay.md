@@ -1,8 +1,10 @@
+> For requests, errors, and application state, start with the [Next.js setup](https://tab-debug-dhairya.vercel.app/setup). The adapter below is only needed for replay.
+
 # Turn an async race into a regression
 
 PageScope addresses a specific debugging gap: knowing which request finished last is insufficient to reproduce a bug. You also need the inputs, selected response data, the order in which application handlers committed, and a statement of correct state.
 
-The [live lab](https://pagescope-omega.vercel.app) captures three actual API responses, projects only the needed fields, and delivers the recorded values through a completion gate. It runs the same async handlers that drive the visible archive or checkout. Their final state is checked against a registered invariant.
+The [live lab](https://tab-debug-dhairya.vercel.app) captures three actual API responses, projects only the needed fields, and delivers the recorded values through a completion gate. It runs the same async handlers that drive the visible archive or checkout. Their final state is checked against a registered invariant.
 
 ## The reproducible experiment
 
@@ -15,16 +17,16 @@ The [live lab](https://pagescope-omega.vercel.app) captures three actual API res
 
 Those counts are computed by executing the handlers. Change the order so Q3 finishes last and the original also passes. Repeated or equivalent inputs can change the failure count. The UI never assigns a fixed score.
 
-The [shipping example](https://pagescope-omega.vercel.app/shipping) uses an independent checkout handler: an older quote must not replace the quote for the current destination. Its fixtures are illustrative; no order is placed.
+The [shipping example](https://tab-debug-dhairya.vercel.app/shipping) uses an independent checkout handler: an older quote must not replace the quote for the current destination. Its fixtures are illustrative; no order is placed.
 
 ## Add it to your app
 
-Build the package in this repository with `npm run build:sdk` and `npm pack ./packages/pagescope`. Install the resulting tarball in your app. Version 0.2 is not published to the npm registry.
+Build the package in this repository with `npm run build:sdk` and `npm pack ./packages/tab-debug`. Install the resulting tarball in your app. Version 0.2 is not published to the npm registry.
 
 The useful seam is your existing async handler's data source. Inject the recorded completion there while preserving the business logic and state publication. For example:
 
 ```ts
-import { installReplayTarget, replay, type Json } from '@dhairya-t/pagescope/replay';
+import { installReplayTarget, replay, type Json } from '@dhairya-t/tab-debug/replay';
 
 // Your application calls this same controller during normal use.
 class SearchController {
@@ -92,8 +94,8 @@ The `implementation` query parameter is a public-demo convention. Your own app s
 Generate tests without the UI using the packaged CLI:
 
 ```bash
-pagescope inspect incident.json
-pagescope test incident.json regression.spec.ts
+tab-debug inspect incident.json
+tab-debug test incident.json regression.spec.ts
 ```
 
 The CLI refuses to overwrite an existing file. Recordings contain JSON, not executable code. Native browser agents can retrieve the current incident through `inspect_state` → `state.Incident`, save it, and use the same CLI.

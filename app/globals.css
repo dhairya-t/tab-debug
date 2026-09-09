@@ -26,11 +26,11 @@
   --font-mono: var(--font-geist-mono);
 }
 :root {
-  --background: #eeefeb;
-  --foreground: #262824;
-  --card: #f9f9f5;
-  --primary: #c24f31;
-  --border: #d2d4cd;
+  --background: #ffffff;
+  --foreground: #202124;
+  --card: #ffffff;
+  --primary: #2459d3;
+  --border: #dedee3;
 }
 .dark {
   --background: #20221f;
@@ -1494,3 +1494,11 @@ footer > a:last-child {
     gap: 20px;
   }
 }
+
+/* Diagnostic examples use the same compact product header as the replay demo. */
+.app-shell .heading { padding: 24px 0 18px; align-items: baseline; }
+.app-shell .heading h1 { font-size: 24px; letter-spacing: -.7px; font-weight: 600; }
+.app-shell .heading > p { font-size: 16px; }
+.app-shell .brand { font-family: var(--font-geist-mono), monospace; font-size: 20px; }
+.app-shell .topbar { height: auto; min-height: 66px; }
+.app-shell .topbar nav { font-size: 14px; }

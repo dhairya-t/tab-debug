@@ -50,7 +50,7 @@ import {
 } from '@/packages/tab-debug/src/react';
 import { DemoController, type ArchivePhoto } from '@/lib/demo/controller';
 import { scenarios, type Scenario } from '@/lib/demo/data';
-const REPO = 'https://github.com/dhairya-t/pagescope';
+const REPO = 'https://github.com/dhairya-t/tab-debug';
 const evidenceTool: Record<Scenario, ToolName> = {
   network: 'inspect_requests',
   race: 'inspect_state',
@@ -219,31 +219,31 @@ export default function Home() {
         <header className="topbar">
           <a href="/" className="brand">
             <Crosshair size={22} strokeWidth={1.5} />
-            PageScope<span>DEVELOPER PREVIEW</span>
+            tab-debug
           </a>
-          <nav>
+          <nav><a href="/">Replay demo</a><a href="/setup">Add to your app</a>
             <Dialog>
               <DialogTrigger className="text-button">
                 How it works
               </DialogTrigger>
               <DialogContent className="about-dialog">
                 <DialogHeader>
-                  <DialogTitle>The debugger travels with the page.</DialogTitle>
+                  <DialogTitle>Browser debugging tools</DialogTitle>
                   <DialogDescription>
-                    PageScope turns explicitly registered state and diagnostics
+                    tab-debug turns explicitly registered state and diagnostics
                     into five read-only WebMCP tools.
                   </DialogDescription>
                 </DialogHeader>
                 <ol className="how-list">
                   <li>
-                    <strong>Instrument what matters.</strong>
+                    <strong>Choose what to record</strong>
                     <p>
                       Wrap selected requests with scope.fetch, register state,
                       and add an error boundary. No global monkey-patching.
                     </p>
                   </li>
                   <li>
-                    <strong>Give the agent this tab.</strong>
+                    <strong>Connect a browser agent</strong>
                     <p>
                       Native WebMCP exposes the tool registry to compatible
                       browser agents. This inspector calls the same validated
@@ -251,7 +251,7 @@ export default function Home() {
                     </p>
                   </li>
                   <li>
-                    <strong>Reproduce, inspect, verify.</strong>
+                    <strong>Run an example</strong>
                     <p>
                       The experiments use real HTTP responses and a real React
                       error boundary. “Apply fix” selects a documented,
@@ -260,7 +260,7 @@ export default function Home() {
                   </li>
                 </ol>
                 <p className="dialog-note">
-                  Next.js already provides server MCP tools. PageScope
+                  Next.js already provides server MCP tools. tab-debug
                   complements them with opt-in browser context. The SDK defaults
                   to no network transport. Treat redaction as a backstop, not
                   permission to register secrets.
@@ -283,13 +283,11 @@ export default function Home() {
         <main>
           <section className="heading">
             <div>
-              <p className="eyebrow">BROWSER-NATIVE OBSERVABILITY</p>
-              <h1>The page is the context.</h1>
+              
+              <h1>Errors and requests</h1>
             </div>
             <p>
-              Give your agent the evidence.{' '}
-              <br />
-              Right here, in the tab it’s testing.
+              Inspect a failed request, a search race, or a React error.
             </p>
           </section>
           <div className="experiment-bar">
@@ -524,7 +522,7 @@ export default function Home() {
             <aside className="inspector">
               <div className="inspector-head">
                 <span>
-                  <Crosshair size={17} /> PageScope
+                  <Crosshair size={17} /> tab-debug
                 </span>
                 <span className={`mode ${native === 'native' ? 'native' : ''}`}>
                   <i />
