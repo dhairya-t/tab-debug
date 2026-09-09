@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-09T04:49:11.366Z",
+  "checkedAt": "2026-09-09T05:57:42.063Z",
   "transport": "agent-browser / native Chrome WebMCP",
   "baseUrl": "http://localhost:3001/",
   "registeredTools": [
@@ -118,7 +118,7 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "16b66522-519e-43d7-9281-5e6b11742fef",
+        "pageId": "a4b723d5-23b4-4105-891b-d67cca58a335",
         "route": "/",
         "stateSources": [
           "FileLoader"
@@ -130,7 +130,7 @@
       "input": {},
       "result": {
         "dropped": 0,
-        "eventCount": 12,
+        "eventCount": 13,
         "guarantees": [
           "page-local",
           "bounded records",
@@ -138,7 +138,7 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "pageId": "1c5e94e1-0232-4b49-ba02-8938bfd72d23",
         "route": "/",
         "stateSources": [
           "FileLoader"
@@ -158,8 +158,8 @@
             },
             "kind": "request",
             "label": "GET /api/transform-file/staging.json",
-            "seq": 4,
-            "time": 1788929330973
+            "seq": 3,
+            "time": 1788933442049
           },
           {
             "data": {
@@ -168,35 +168,35 @@
             },
             "kind": "request",
             "label": "GET /api/transform-file/production.json",
-            "seq": 7,
-            "time": 1788929332325
+            "seq": 6,
+            "time": 1788933442164
           },
           {
             "data": {
-              "durationMs": 220,
+              "durationMs": 207.3,
               "ok": true,
-              "requestId": 7,
+              "requestId": 6,
               "status": 200
             },
             "kind": "response",
             "label": "200 /api/transform-file/production.json",
-            "seq": 9,
-            "time": 1788929332545
+            "seq": 8,
+            "time": 1788933442371
           },
           {
             "data": {
-              "durationMs": 5018.7,
+              "durationMs": 5012.2,
               "ok": true,
-              "requestId": 4,
+              "requestId": 3,
               "status": 200
             },
             "kind": "response",
             "label": "200 /api/transform-file/staging.json",
             "seq": 11,
-            "time": 1788929335991
+            "time": 1788933447061
           }
         ],
-        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "pageId": "1c5e94e1-0232-4b49-ba02-8938bfd72d23",
         "route": "/",
         "total": 4
       }
@@ -207,7 +207,7 @@
       "result": {
         "dropped": 0,
         "events": [],
-        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "pageId": "1c5e94e1-0232-4b49-ba02-8938bfd72d23",
         "route": "/",
         "total": 0
       }
@@ -216,14 +216,19 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "pageId": "1c5e94e1-0232-4b49-ba02-8938bfd72d23",
         "route": "/",
         "state": {
           "FileLoader": {
+            "appliedFiles": [
+              "production.json",
+              "staging.json"
+            ],
             "discardedOlderResponse": false,
             "displayedFile": "staging.json",
             "implementation": "original",
             "loading": false,
+            "responseDelivery": "Paused between walkthrough steps",
             "selectedFile": "production.json",
             "value": "{\n  \"file\": \"staging.json\",\n  \"app\": \"checkout\",\n  \"environment\": \"staging\",\n  \"debug\": true\n}"
           }
@@ -243,21 +248,7 @@
             "kind": "navigation",
             "label": "Page context created",
             "seq": 1,
-            "time": 1788929330621
-          },
-          {
-            "data": {
-              "discardedOlderResponse": false,
-              "displayedFile": null,
-              "implementation": "original",
-              "loading": true,
-              "selectedFile": null,
-              "value": ""
-            },
-            "kind": "state",
-            "label": "FileLoader",
-            "seq": 2,
-            "time": 1788929330627
+            "time": 1788933442049
           },
           {
             "data": {
@@ -265,8 +256,8 @@
             },
             "kind": "action",
             "label": "Fetch URL",
-            "seq": 3,
-            "time": 1788929330972
+            "seq": 2,
+            "time": 1788933442049
           },
           {
             "data": {
@@ -275,22 +266,24 @@
             },
             "kind": "request",
             "label": "GET /api/transform-file/staging.json",
-            "seq": 4,
-            "time": 1788929330973
+            "seq": 3,
+            "time": 1788933442049
           },
           {
             "data": {
+              "appliedFiles": [],
               "discardedOlderResponse": false,
               "displayedFile": null,
               "implementation": "original",
               "loading": true,
+              "responseDelivery": "Paused between walkthrough steps",
               "selectedFile": "staging.json",
               "value": ""
             },
             "kind": "state",
             "label": "FileLoader",
-            "seq": 5,
-            "time": 1788929330977
+            "seq": 4,
+            "time": 1788933442056
           },
           {
             "data": {
@@ -298,8 +291,8 @@
             },
             "kind": "action",
             "label": "Fetch URL",
-            "seq": 6,
-            "time": 1788929332325
+            "seq": 5,
+            "time": 1788933442164
           },
           {
             "data": {
@@ -308,79 +301,108 @@
             },
             "kind": "request",
             "label": "GET /api/transform-file/production.json",
-            "seq": 7,
-            "time": 1788929332325
+            "seq": 6,
+            "time": 1788933442164
           },
           {
             "data": {
+              "appliedFiles": [],
               "discardedOlderResponse": false,
               "displayedFile": null,
               "implementation": "original",
               "loading": true,
+              "responseDelivery": "Paused between walkthrough steps",
               "selectedFile": "production.json",
               "value": ""
             },
             "kind": "state",
             "label": "FileLoader",
-            "seq": 8,
-            "time": 1788929332330
+            "seq": 7,
+            "time": 1788933442168
           },
           {
             "data": {
-              "durationMs": 220,
+              "durationMs": 207.3,
               "ok": true,
-              "requestId": 7,
+              "requestId": 6,
               "status": 200
             },
             "kind": "response",
             "label": "200 /api/transform-file/production.json",
-            "seq": 9,
-            "time": 1788929332545
+            "seq": 8,
+            "time": 1788933442371
           },
           {
             "data": {
+              "file": "production.json"
+            },
+            "kind": "action",
+            "label": "Response applied to editor",
+            "seq": 9,
+            "time": 1788933442372
+          },
+          {
+            "data": {
+              "appliedFiles": [
+                "production.json"
+              ],
               "discardedOlderResponse": false,
               "displayedFile": "production.json",
               "implementation": "original",
               "loading": true,
+              "responseDelivery": "Paused between walkthrough steps",
               "selectedFile": "production.json",
               "value": "{\n  \"file\": \"production.json\",\n  \"app\": \"checkout\",\n  \"environment\": \"production\",\n  \"debug\": false\n}"
             },
             "kind": "state",
             "label": "FileLoader",
             "seq": 10,
-            "time": 1788929332553
+            "time": 1788933442378
           },
           {
             "data": {
-              "durationMs": 5018.7,
+              "durationMs": 5012.2,
               "ok": true,
-              "requestId": 4,
+              "requestId": 3,
               "status": 200
             },
             "kind": "response",
             "label": "200 /api/transform-file/staging.json",
             "seq": 11,
-            "time": 1788929335991
+            "time": 1788933447061
           },
           {
             "data": {
+              "file": "staging.json"
+            },
+            "kind": "action",
+            "label": "Response applied to editor",
+            "seq": 12,
+            "time": 1788933447062
+          },
+          {
+            "data": {
+              "appliedFiles": [
+                "production.json",
+                "staging.json"
+              ],
               "discardedOlderResponse": false,
               "displayedFile": "staging.json",
               "implementation": "original",
               "loading": false,
+              "responseDelivery": "Paused between walkthrough steps",
               "selectedFile": "production.json",
               "value": "{\n  \"file\": \"staging.json\",\n  \"app\": \"checkout\",\n  \"environment\": \"staging\",\n  \"debug\": true\n}"
             },
             "kind": "state",
             "label": "FileLoader",
-            "seq": 12,
-            "time": 1788929336005
+            "seq": 13,
+            "time": 1788933447076
           }
         ],
-        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "pageId": "1c5e94e1-0232-4b49-ba02-8938bfd72d23",
         "route": "/",
-        "total": 12
+        "total": 13
       }
     },
     {
@@ -388,7 +410,7 @@
       "input": {},
       "result": {
         "dropped": 0,
-        "eventCount": 12,
+        "eventCount": 13,
         "guarantees": [
           "page-local",
           "bounded records",
@@ -396,7 +418,7 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "pageId": "1c5e94e1-0232-4b49-ba02-8938bfd72d23",
         "route": "/",
         "stateSources": [
           "FileLoader"
@@ -408,7 +430,7 @@
       "input": {},
       "result": {
         "dropped": 0,
-        "eventCount": 12,
+        "eventCount": 13,
         "guarantees": [
           "page-local",
           "bounded records",
@@ -416,7 +438,7 @@
           "no headers or bodies captured"
         ],
         "latestError": null,
-        "pageId": "b4196400-bd28-419d-a948-02a0f6754580",
+        "pageId": "1c5e94e1-0232-4b49-ba02-8938bfd72d23",
         "route": "/",
         "stateSources": [
           "FileLoader"
@@ -427,14 +449,18 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "7a1e1a4f-de76-479d-842b-66685c3783a8",
+        "pageId": "bbb484a7-4f41-4e14-90c7-e0c14e2ec06c",
         "route": "/",
         "state": {
           "FileLoader": {
+            "appliedFiles": [
+              "production.json"
+            ],
             "discardedOlderResponse": true,
             "displayedFile": "production.json",
             "implementation": "fixed",
             "loading": false,
+            "responseDelivery": "Paused between walkthrough steps",
             "selectedFile": "production.json",
             "value": "{\n  \"file\": \"production.json\",\n  \"app\": \"checkout\",\n  \"environment\": \"production\",\n  \"debug\": false\n}"
           }
@@ -445,7 +471,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "0664464f-e3bd-4c57-8031-246811fe32ee",
+        "pageId": "e29074f7-1bc9-49e7-a9e8-3b3cc27c084f",
         "route": "/replay",
         "state": {
           "Comparison": {
@@ -466,7 +492,7 @@
           },
           "Incident": {
             "appId": "atlas.search.v1",
-            "createdAt": "2026-09-09T04:49:07.427Z",
+            "createdAt": "2026-09-09T05:57:38.135Z",
             "format": "pagescope.incident.v1",
             "operations": [
               {
@@ -482,7 +508,7 @@
                   ],
                   "query": "namibia"
                 },
-                "transportMs": 40.8
+                "transportMs": 53.2
               },
               {
                 "id": "Q2",
@@ -496,7 +522,7 @@
                   ],
                   "query": "atlantic"
                 },
-                "transportMs": 40.4
+                "transportMs": 53
               },
               {
                 "id": "Q3",
@@ -510,7 +536,7 @@
                   ],
                   "query": "lena"
                 },
-                "transportMs": 40.4
+                "transportMs": 52.3
               }
             ],
             "order": [
@@ -558,7 +584,7 @@
       "tool": "inspect_state",
       "input": {},
       "result": {
-        "pageId": "0664464f-e3bd-4c57-8031-246811fe32ee",
+        "pageId": "e29074f7-1bc9-49e7-a9e8-3b3cc27c084f",
         "route": "/replay",
         "state": {
           "Comparison": {
@@ -579,7 +605,7 @@
           },
           "Incident": {
             "appId": "atlas.search.v1",
-            "createdAt": "2026-09-09T04:49:07.427Z",
+            "createdAt": "2026-09-09T05:57:38.135Z",
             "format": "pagescope.incident.v1",
             "operations": [
               {
@@ -595,7 +621,7 @@
                   ],
                   "query": "namibia"
                 },
-                "transportMs": 40.8
+                "transportMs": 53.2
               },
               {
                 "id": "Q2",
@@ -609,7 +635,7 @@
                   ],
                   "query": "atlantic"
                 },
-                "transportMs": 40.4
+                "transportMs": 53
               },
               {
                 "id": "Q3",
@@ -623,7 +649,7 @@
                   ],
                   "query": "lena"
                 },
-                "transportMs": 40.4
+                "transportMs": 52.3
               }
             ],
             "order": [
